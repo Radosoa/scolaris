@@ -1,0 +1,33 @@
+# Environnement de développement local : `docker compose up -d`
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: scolaris
+      MYSQL_USER: scolaris
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      retries: 20
+
+  api:
+    build: ./docker/php
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+volumes:
+  mysql-data:
