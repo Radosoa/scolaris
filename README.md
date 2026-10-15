@@ -45,7 +45,7 @@ npm install
 npm run dev
 ```
 
-- API : http://localhost:8000
+- API : http://localhost:8001
 - Application : http://localhost:5173
 - MySQL depuis l'hôte : `127.0.0.1:3307` (utilisateur `scolaris` / `secret`)
 
