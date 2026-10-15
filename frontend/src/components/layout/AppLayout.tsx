@@ -10,7 +10,7 @@ export function AppLayout() {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false)
 
   return (
-    <div className="min-h-svh bg-muted/30">
+    <div className="min-h-svh bg-neutral-50">
       {/* Sidebar fixe sur grand écran */}
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-sidebar lg:block">
         <SidebarNav />
