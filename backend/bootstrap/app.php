@@ -2,6 +2,7 @@
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -48,6 +49,15 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (NotFoundHttpException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json(['message' => 'Ressource introuvable.'], 404);
+            }
+        });
+
+        // Suppression bloquée par une clé étrangère (MySQL 1451) : l'élément est encore utilisé
+        $exceptions->render(function (QueryException $e, Request $request) {
+            if ($request->is('api/*') && ($e->errorInfo[1] ?? null) === 1451) {
+                return response()->json([
+                    'message' => 'Suppression impossible : cet élément est utilisé par d\'autres données.',
+                ], 409);
             }
         });
     })->create();

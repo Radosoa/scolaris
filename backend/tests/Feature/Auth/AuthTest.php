@@ -4,7 +4,6 @@ namespace Tests\Feature\Auth;
 
 use App\Enums\Role;
 use App\Models\User;
-use Database\Seeders\RolePermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Route;
 use Tests\TestCase;
@@ -12,13 +11,6 @@ use Tests\TestCase;
 class AuthTest extends TestCase
 {
     use RefreshDatabase;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->seed(RolePermissionSeeder::class);
-    }
 
     private function utilisateur(Role $role, array $attributs = []): User
     {
