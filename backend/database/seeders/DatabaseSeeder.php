@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
             StructureSeeder::class,
             PersonnesSeeder::class,
             NotesSeeder::class,
+            BulletinsSeeder::class,
         ]);
     }
 }

@@ -29,5 +29,17 @@ services:
       mysql:
         condition: service_healthy
 
+  # Traite les jobs de la queue `database` (génération des PDF de bulletins)
+  worker:
+    build: ./docker/php
+    command: php -d memory_limit=256M artisan queue:work --tries=2 --timeout=600 --memory=256
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   mysql-data:

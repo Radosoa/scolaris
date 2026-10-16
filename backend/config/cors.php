@@ -26,7 +26,8 @@ return [
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    // Nom des fichiers téléchargés (PDF des bulletins), lu par le front
+    'exposed_headers' => ['Content-Disposition'],
 
     'max_age' => 0,
 

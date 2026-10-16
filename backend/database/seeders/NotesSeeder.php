@@ -5,13 +5,14 @@ namespace Database\Seeders;
 use App\Enums\StatutInscription;
 use App\Models\Affectation;
 use App\Models\AnneeScolaire;
+use App\Models\Eleve;
 use App\Models\Evaluation;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 /**
- * Notes de démonstration du premier trimestre : trois évaluations par affectation
- * (deux devoirs et une interrogation), notes cohérentes par élève (un « niveau »
+ * Notes de démonstration du premier trimestre : quatre évaluations par affectation
+ * (deux devoirs, une interrogation et la composition sur 40), notes cohérentes par élève (un « niveau »
  * propre à chaque élève + variation par matière) et ~3 % d'absences.
  * Ne fait rien si des évaluations existent déjà.
  */
@@ -37,11 +38,18 @@ class NotesSeeder extends Seeder
             ['type' => 'devoir', 'titre' => 'Devoir 1', 'jours' => 14, 'bareme' => 20],
             ['type' => 'interrogation', 'titre' => 'Interrogation écrite', 'jours' => 24, 'bareme' => 10],
             ['type' => 'devoir', 'titre' => 'Devoir 2', 'jours' => 35, 'bareme' => 20],
+            ['type' => 'composition', 'titre' => 'Composition du 1er trimestre', 'jours' => 70, 'bareme' => 40],
         ];
 
         $affectations = Affectation::with(['classe.inscriptions' => fn ($q) => $q->where('statut', StatutInscription::Inscrit)])
             ->whereHas('classe', fn ($q) => $q->where('annee_scolaire_id', $annee->id))
             ->get();
+
+        // Élève de démonstration (eleve@) : bon élève, pour un bulletin parlant
+        $demo = Eleve::whereHas('user', fn ($q) => $q->where('email', 'eleve@scolaris.test'))->value('id');
+        if ($demo) {
+            $niveaux[$demo] = 14.5;
+        }
 
         foreach ($affectations as $affectation) {
             $ecartMatiere = [];

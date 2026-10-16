@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Bulletins\AppreciationController;
+use App\Http\Controllers\Api\Bulletins\BulletinClasseController;
+use App\Http\Controllers\Api\Bulletins\BulletinController;
 use App\Http\Controllers\Api\Notes\EvaluationController;
 use App\Http\Controllers\Api\Notes\ReleveNotesController;
 use App\Http\Controllers\Api\Personnes\AffectationController;
@@ -62,6 +65,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/evaluations/{evaluation}/notes', [EvaluationController::class, 'grille']);
     Route::put('/evaluations/{evaluation}/notes', [EvaluationController::class, 'enregistrerNotes']);
     Route::get('/eleves/{eleve}/notes', ReleveNotesController::class);
+
+    // --- Bulletins ------------------------------------------------------------
+    Route::prefix('/classes/{classe}/periodes/{periode}/bulletins')->controller(BulletinClasseController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('/calculer', 'calculer');
+        Route::post('/valider', 'valider');
+        Route::post('/pdf', 'genererPdf');
+        Route::get('/pdf', 'telechargerPdf');
+    });
+    Route::get('/bulletins/{bulletin}', [BulletinController::class, 'show']);
+    Route::put('/bulletins/{bulletin}/appreciation', [BulletinController::class, 'appreciation']);
+    Route::get('/bulletins/{bulletin}/pdf', [BulletinController::class, 'pdf']);
+    Route::get('/eleves/{eleve}/bulletins', [BulletinController::class, 'deLEleve']);
+    Route::get('/affectations/{affectation}/appreciations', [AppreciationController::class, 'index']);
+    Route::put('/affectations/{affectation}/appreciations', [AppreciationController::class, 'enregistrer']);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

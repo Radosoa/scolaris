@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Table('inscriptions')]
 #[Fillable(['eleve_id', 'classe_id', 'annee_scolaire_id', 'statut', 'date_inscription'])]
@@ -47,5 +48,11 @@ class Inscription extends Model
     public function anneeScolaire(): BelongsTo
     {
         return $this->belongsTo(AnneeScolaire::class);
+    }
+
+    /** @return HasMany<Bulletin, $this> */
+    public function bulletins(): HasMany
+    {
+        return $this->hasMany(Bulletin::class);
     }
 }

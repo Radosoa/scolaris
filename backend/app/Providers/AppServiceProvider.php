@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Bulletins\MoyenneCalculator;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -14,7 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Règles du bulletin lues dans config/bulletin.php (surchargeables par .env)
+        $this->app->bind(MoyenneCalculator::class, fn () => MoyenneCalculator::depuisConfig());
     }
 
     /**

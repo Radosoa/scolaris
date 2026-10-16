@@ -48,13 +48,32 @@ npm run dev
 - API : http://localhost:8001
 - Application : http://localhost:5173
 - MySQL depuis l'hôte : `127.0.0.1:3307` (utilisateur `scolaris` / `secret`)
+- Le service `worker` traite la file d'attente (génération des PDF de bulletins par classe)
 
 ### Tests
 
 ```bash
-docker compose exec api php artisan test   # backend (base MySQL scolaris_test)
-cd frontend && npm run build && npm run lint
+docker compose exec api php artisan test   # backend : unitaires + fonctionnels (base MySQL scolaris_test)
+cd frontend && npm run test && npm run lint && npm run build
 ```
+
+## Bulletins automatiques
+
+Le calcul est isolé dans `MoyenneCalculator` (classe pure, sans base de données, couverte par
+des tests unitaires) et orchestré par `BulletinService`.
+
+- Chaque note est ramenée sur 20 ; moyenne par matière = 40 % devoirs et interrogations
+  + 60 % composition (pondérations dans `config/bulletin.php`, surchargeables par `.env`) ;
+  si une catégorie est vide, l'autre compte seule.
+- Un élève absent n'est compté ni comme zéro ni dans le diviseur ; une matière sans note
+  est exclue de la moyenne générale (Σ moyenne × coefficient du niveau / Σ coefficients).
+- Rangs calculés sur les valeurs non arrondies, ex æquo partagés (1, 2, 2, 4) ;
+  moyennes stockées avec 4 décimales, affichées avec 2.
+- Mentions selon des seuils configurables ; heures d'absence et retards de la période.
+- Calcul possible uniquement sur une période clôturée ; une fois validés, les bulletins sont
+  figés (ni recalcul, ni appréciation, ni réouverture de la période).
+- PDF individuels (à la volée, mention « Projet » pour un brouillon) et génération en lot par
+  classe dans un job de queue, avec un PDF regroupé pour l'impression.
 
 ## Comptes de démonstration
 
@@ -83,4 +102,7 @@ Mot de passe commun : `password`
 - **Backend** (Render, AlwaysData…) : `backend/Dockerfile` construit une image Apache + PHP 8.4.
   Variables minimales : `APP_KEY`, `APP_URL`, `FRONTEND_URL`, `DB_*`. Le port est lu dans `$PORT`
   et les migrations s'exécutent au démarrage (`RUN_MIGRATIONS=false` pour les désactiver).
-  Sans worker permanent, utiliser `QUEUE_CONNECTION=sync`.
+  Sans worker permanent, utiliser `QUEUE_CONNECTION=sync` : la génération des PDF d'une classe
+  (~10 s pour 25 élèves) s'exécute alors dans la requête. Les PDF sont stockés sur le disque
+  local du conteneur ; un PDF individuel disparu est régénéré à la demande.
+  L'en-tête des documents se configure avec les variables `ECOLE_*`.
