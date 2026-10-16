@@ -33,6 +33,8 @@ des cinq profils : direction, secrétariat, professeur, élève et parent.
 
 ## Captures d'écran
 
+![Page de connexion](docs/captures/01-connexion.png)
+
 | | |
 |---|---|
 | ![Grille de saisie des notes](docs/captures/06-grille-de-notes.png) **Saisie des notes en grille** (navigation clavier, statistiques en direct) | ![Bulletins d'une classe](docs/captures/07-bulletins-classe.png) **Bulletins d'une classe** : calculer, valider, générer les PDF |

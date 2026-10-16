@@ -131,3 +131,8 @@
     @apply font-sans;
     }
 }
+/* Aperçus flottants de la page de connexion (désactivés si l'utilisateur réduit les animations) */
+@keyframes flotter {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
