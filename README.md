@@ -69,6 +69,21 @@ cd frontend && npm run test && npm run lint && npm run build
 - **Justification** par le secrétariat, pour une absence ou toute la journée de l'élève.
 - Les heures d'absence (justifiées / non justifiées) et les retards alimentent les bulletins.
 
+## Finances et communication
+
+- **Frais par niveau** (scolarité, cantine…) et **échéancier** de l'année (tranches en %, total
+  100 %) fixés par la direction. Après chaque date limite, la part exigible non réglée apparaît
+  **en retard**.
+- **Paiements par tranches** au montant libre, plafonné au reste à payer (calculs en centimes,
+  verrou sur l'inscription). Numéro de reçu séquentiel `R2026-00001`, jamais réutilisé.
+- Un paiement ne se supprime pas : il **s'annule** avec un motif ; il sort des totaux et son reçu
+  reste consultable avec la mention « Annulé ».
+- **Reçu PDF** avec montant en toutes lettres (`MontantEnLettres`, testé unitairement),
+  **liste des impayés** filtrable (en retard, reste à payer, à jour) et journal des encaissements.
+- Les parents consultent la situation de leurs enfants et téléchargent leurs reçus.
+- **Annonces ciblées** : tout l'établissement, professeurs, parents ou une classe (élèves, parents
+  et professeurs de la classe), publication immédiate ou programmée.
+
 ## Bulletins automatiques
 
 Le calcul est isolé dans `MoyenneCalculator` (classe pure, sans base de données, couverte par

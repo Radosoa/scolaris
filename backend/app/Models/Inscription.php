@@ -50,6 +50,12 @@ class Inscription extends Model
         return $this->belongsTo(AnneeScolaire::class);
     }
 
+    /** @return HasMany<Paiement, $this> */
+    public function paiements(): HasMany
+    {
+        return $this->hasMany(Paiement::class);
+    }
+
     /** @return HasMany<Bulletin, $this> */
     public function bulletins(): HasMany
     {

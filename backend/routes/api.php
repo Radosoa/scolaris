@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\AnnonceController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Bulletins\AppreciationController;
 use App\Http\Controllers\Api\Bulletins\BulletinClasseController;
 use App\Http\Controllers\Api\Bulletins\BulletinController;
+use App\Http\Controllers\Api\Finances\FraisController;
+use App\Http\Controllers\Api\Finances\PaiementController;
+use App\Http\Controllers\Api\Finances\SituationController;
 use App\Http\Controllers\Api\Notes\EvaluationController;
 use App\Http\Controllers\Api\Notes\ReleveNotesController;
 use App\Http\Controllers\Api\Personnes\AffectationController;
@@ -93,6 +97,19 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/absences', [AbsenceController::class, 'index']);
     Route::put('/absences/{absence}/justification', [AbsenceController::class, 'justifier']);
     Route::get('/eleves/{eleve}/absences', [AbsenceController::class, 'deLEleve']);
+
+    // --- Finances ------------------------------------------------------------
+    Route::apiResource('frais', FraisController::class)->except('show')->parameters(['frais' => 'frais']);
+    Route::put('/annees-scolaires/{annee}/echeances', [FraisController::class, 'echeances']);
+    Route::get('/impayes', [SituationController::class, 'impayes']);
+    Route::get('/eleves/{eleve}/finances', [SituationController::class, 'eleve']);
+    Route::get('/paiements', [PaiementController::class, 'index']);
+    Route::post('/inscriptions/{inscription}/paiements', [PaiementController::class, 'store']);
+    Route::post('/paiements/{paiement}/annuler', [PaiementController::class, 'annuler']);
+    Route::get('/paiements/{paiement}/recu', [PaiementController::class, 'recu']);
+
+    // --- Communication -------------------------------------------------------
+    Route::apiResource('annonces', AnnonceController::class);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

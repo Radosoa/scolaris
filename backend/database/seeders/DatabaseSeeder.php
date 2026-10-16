@@ -17,6 +17,8 @@ class DatabaseSeeder extends Seeder
             EmploiDuTempsSeeder::class,
             AbsencesSeeder::class,
             BulletinsSeeder::class,
+            FinancesSeeder::class,
+            AnnoncesSeeder::class,
         ]);
     }
 }
