@@ -42,7 +42,7 @@ export function TableauProfesseur({ donnees }: { donnees: Donnees }) {
                     to={`/appel?date=${aujourdhui}&creneau=${c.creneau_id}`}
                     className="flex items-center gap-3 rounded-lg border p-2.5 text-sm transition-colors hover:bg-accent/50"
                   >
-                    {c.appel_fait ? <CheckCircle2 className="size-4 text-emerald-600" aria-label="Appel fait" /> : <Circle className="size-4 text-muted-foreground" aria-label="Appel à faire" />}
+                    {c.appel_fait ? <CheckCircle2 className="size-4 text-emerald-600 dark:text-emerald-400" aria-label="Appel fait" /> : <Circle className="size-4 text-muted-foreground" aria-label="Appel à faire" />}
                     <span className="font-medium tabular-nums">
                       {c.heure_debut} – {c.heure_fin}
                     </span>

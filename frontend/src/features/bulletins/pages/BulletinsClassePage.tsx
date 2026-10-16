@@ -303,7 +303,7 @@ function Etape({ numero, titre, fait, detail, children }: { numero: number; titr
   return (
     <Card size="sm">
       <CardContent className="flex h-full items-start gap-3">
-        {fait ? <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" /> : <Circle className="mt-0.5 size-5 shrink-0 text-muted-foreground" />}
+        {fait ? <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600 dark:text-emerald-400" /> : <Circle className="mt-0.5 size-5 shrink-0 text-muted-foreground" />}
         <div className="flex h-full min-w-0 flex-1 flex-col gap-3">
           <div>
             <p className="text-sm font-medium">

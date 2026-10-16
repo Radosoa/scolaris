@@ -5,6 +5,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Scolaris — Gestion scolaire</title>
+    <script>
+      // Thème appliqué avant le premier rendu (évite un flash blanc en mode sombre)
+      try {
+        var theme = localStorage.getItem('scolaris.theme') || 'system'
+        var sombre = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches)
+        if (sombre) document.documentElement.classList.add('dark')
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

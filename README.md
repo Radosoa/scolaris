@@ -45,7 +45,7 @@ des cinq profils : direction, secrétariat, professeur, élève et parent.
 | ![Tableau de bord professeur](docs/captures/04-tableau-de-bord-professeur.png) **Tableau de bord du professeur** | ![Tableau de bord parent](docs/captures/05-tableau-de-bord-parent.png) **Tableau de bord du parent** |
 
 Exemples de documents générés : [bulletin PDF](docs/exemples/bulletin.pdf) · [reçu de paiement PDF](docs/exemples/recu.pdf).
-L'interface est responsive : [tableau de bord sur mobile](docs/captures/03-tableau-de-bord-mobile.png).
+L’interface est responsive ([tableau de bord sur mobile](docs/captures/03-tableau-de-bord-mobile.png)) et propose un thème clair, sombre ou celui du système ([mode sombre](docs/captures/18-mode-sombre.png)).
 
 ## Fonctionnalités
 

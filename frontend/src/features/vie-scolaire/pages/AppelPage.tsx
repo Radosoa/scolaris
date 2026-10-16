@@ -61,7 +61,7 @@ export function AppelPage() {
                   )}
                 >
                   {appel_fait ? (
-                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600" aria-label="Appel fait" />
+                    <CheckCircle2 className="mt-0.5 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-label="Appel fait" />
                   ) : (
                     <Circle className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-label="Appel à faire" />
                   )}

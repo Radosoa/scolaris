@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
+import { ChoixTheme } from './ChoixTheme'
 import { RechercheRapide } from './RechercheRapide'
 import { SidebarNav } from './SidebarNav'
 
@@ -45,6 +46,7 @@ export function AppLayout() {
             <CalendarDays className="size-4" />
             <span className="first-letter:uppercase">{aujourdhui}</span>
           </p>
+          <ChoixTheme className="ml-auto md:ml-0" />
         </header>
 
         <main className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">

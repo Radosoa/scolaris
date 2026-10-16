@@ -23,6 +23,7 @@ import { Label } from '@/components/ui/label'
 import { applyValidationErrors, getErrorMessage } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { useAuth } from './auth-context'
+import { ChoixTheme } from '@/components/layout/ChoixTheme'
 import { Vitrine } from './components/Vitrine'
 import { loginSchema, type LoginValues } from './schemas'
 
@@ -75,6 +76,8 @@ export function LoginPage() {
         <div className="absolute -right-32 -bottom-40 size-[30rem] rounded-full bg-fuchsia-300/30 blur-3xl dark:bg-fuchsia-900/30" />
         <div className="absolute inset-0 bg-[linear-gradient(to_right,rgb(99_102_241/0.06)_1px,transparent_1px),linear-gradient(to_bottom,rgb(99_102_241/0.06)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black_40%,transparent_75%)]" />
       </div>
+
+      <ChoixTheme className="absolute top-3 right-3 z-10 sm:top-5 sm:right-5" />
 
       <main className="relative grid w-full max-w-5xl overflow-hidden rounded-3xl bg-background shadow-2xl ring-1 shadow-indigo-950/10 ring-black/5 lg:min-h-[40rem] lg:grid-cols-[1.05fr_1fr] dark:ring-white/10">
         <Vitrine />
@@ -186,13 +189,13 @@ export function LoginPage() {
                       disabled={isSubmitting}
                       title={email}
                       className={cn(
-                        'group flex flex-col items-start gap-1 rounded-xl border bg-background p-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md hover:shadow-indigo-500/10 disabled:opacity-60',
+                        'group flex flex-col items-start gap-1 rounded-xl border bg-background p-2.5 text-left transition-all hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow-md dark:hover:border-indigo-500/60 hover:shadow-indigo-500/10 disabled:opacity-60',
                         'w-[calc(50%-0.25rem)] sm:w-[calc(33.333%-0.34rem)]',
                         // Le dernier compte occupe toute la ligne sur mobile (5 comptes, 2 colonnes)
                         i === COMPTES_DEMO.length - 1 && 'w-full sm:w-[calc(33.333%-0.34rem)]',
                       )}
                     >
-                      <Icone className="size-4 text-indigo-600 transition-transform group-hover:scale-110" />
+                      <Icone className="size-4 text-indigo-600 transition-transform group-hover:scale-110 dark:text-indigo-300" />
                       <span className="text-sm font-medium">{libelle}</span>
                       <span className="text-[11px] leading-tight text-muted-foreground">{detail}</span>
                     </button>
