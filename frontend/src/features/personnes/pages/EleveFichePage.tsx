@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/auth-context'
+import { ListeBulletins } from '@/features/bulletins/components/ListeBulletins'
 import { ReleveNotes } from '@/features/notes/components/ReleveNotes'
 import { useDialogState } from '@/hooks/use-dialog-state'
 import { getErrorMessage } from '@/lib/api'
@@ -189,6 +190,17 @@ export function EleveFichePage() {
             </CardHeader>
             <CardContent>
               <ReleveNotes eleveId={eleve.id} />
+            </CardContent>
+          </Card>
+        )}
+
+        {eleve.inscriptions && eleve.inscriptions.length > 0 && (
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Bulletins</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ListeBulletins eleveId={eleve.id} />
             </CardContent>
           </Card>
         )}

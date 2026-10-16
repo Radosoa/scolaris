@@ -28,6 +28,7 @@ const ECRANS: Record<string, Chargeur> = {
     import('@/features/personnes/pages/AffectationsPage').then((m) => ({ Component: m.AffectationsPage })),
   '/mes-enfants': () => import('@/features/personnes/pages/MesEnfantsPage').then((m) => ({ Component: m.MesEnfantsPage })),
   '/notes': () => import('@/features/notes/pages/NotesPage').then((m) => ({ Component: m.NotesPage })),
+  '/bulletins': () => import('@/features/bulletins/pages/BulletinsPage').then((m) => ({ Component: m.BulletinsPage })),
 }
 
 interface SousPage {
@@ -38,6 +39,14 @@ interface SousPage {
 }
 
 const SOUS_PAGES: Record<string, SousPage[]> = {
+  '/bulletins': [
+    {
+      // Le secrétariat y accède depuis la fiche élève ; l'API ne sert que les bulletins autorisés (403 sinon)
+      path: '/bulletins/:id',
+      lazy: () => import('@/features/bulletins/pages/BulletinPage').then((m) => ({ Component: m.BulletinPage })),
+      roles: ['admin', 'secretariat', 'professeur', 'parent', 'eleve'],
+    },
+  ],
   '/notes': [
     {
       path: '/notes/evaluations/:id',
