@@ -81,7 +81,8 @@ class FinancesSeeder extends Seeder
             };
 
             foreach ($versements as $i => $montant) {
-                $date = $rentree->addDays(mt_rand(0, 25) + $i * 10)->min($aujourdhui);
+                // La plupart paient en septembre, quelques retardataires en octobre
+                $date = $rentree->addDays(mt_rand(0, 100) <= 75 ? mt_rand(0, 28) : mt_rand(29, 45))->addDays($i * 21)->min($aujourdhui);
                 $mode = $this->mode();
                 $paiement = $paiements->encaisser($inscription, [
                     'montant' => $montant,

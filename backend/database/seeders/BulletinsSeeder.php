@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\DB;
  * Bulletins de démonstration du trimestre 1, clôturé pour l'occasion, avec les trois états
  * de l'écran de la direction :
  * - classes « A » : calculés, appréciations saisies, validés (consultables par élèves et parents) ;
- * - 6e B : calculés mais pas encore validés (le professeur peut saisir ses appréciations) ;
- * - autres classes « B » : non calculés (pour essayer « Calculer »).
+ * - autres classes « B » : calculés mais pas encore validés (le professeur peut saisir ses appréciations) ;
+ * - 5e B : non calculés (pour essayer « Calculer »).
  * Ne fait rien si des bulletins existent déjà.
  */
 class BulletinsSeeder extends Seeder
@@ -58,7 +58,7 @@ class BulletinsSeeder extends Seeder
 
         foreach ($classes as $classe) {
             $aValider = str_ends_with($classe->nom, 'A');
-            if (! $aValider && $classe->nom !== '6e B') {
+            if ($classe->nom === '5e B') {
                 continue;
             }
 

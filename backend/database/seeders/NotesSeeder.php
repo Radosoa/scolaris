@@ -37,8 +37,8 @@ class NotesSeeder extends Seeder
         $modeles = [
             ['type' => 'devoir', 'titre' => 'Devoir 1', 'jours' => 14, 'bareme' => 20],
             ['type' => 'interrogation', 'titre' => 'Interrogation écrite', 'jours' => 24, 'bareme' => 10],
-            ['type' => 'devoir', 'titre' => 'Devoir 2', 'jours' => 35, 'bareme' => 20],
-            ['type' => 'composition', 'titre' => 'Composition du 1er trimestre', 'jours' => 70, 'bareme' => 40],
+            ['type' => 'devoir', 'titre' => 'Devoir 2', 'jours' => 31, 'bareme' => 20],
+            ['type' => 'composition', 'titre' => 'Composition du 1er trimestre', 'jours' => 43, 'bareme' => 40],
         ];
 
         $affectations = Affectation::with(['classe.inscriptions' => fn ($q) => $q->where('statut', StatutInscription::Inscrit)])
@@ -59,7 +59,8 @@ class NotesSeeder extends Seeder
                     'periode_id' => $trimestre->id,
                     'type' => $modele['type'],
                     'titre' => $modele['titre'],
-                    'date' => $trimestre->date_debut->copy()->addDays($modele['jours'])->toDateString(),
+                    // Jamais dans le futur : le trimestre de démo est clôturé en avance
+                    'date' => $trimestre->date_debut->copy()->addDays($modele['jours'])->min(now()->subDay())->toDateString(),
                     'bareme' => $modele['bareme'],
                 ]);
 

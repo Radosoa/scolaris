@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\Structure\ClasseController;
 use App\Http\Controllers\Api\Structure\MatiereController;
 use App\Http\Controllers\Api\Structure\NiveauController;
 use App\Http\Controllers\Api\Structure\PeriodeController;
+use App\Http\Controllers\Api\TableauDeBordController;
 use App\Http\Controllers\Api\VieScolaire\AbsenceController;
 use App\Http\Controllers\Api\VieScolaire\AppelController;
 use App\Http\Controllers\Api\VieScolaire\EmploiDuTempsController;
@@ -32,6 +33,7 @@ Route::post('/auth/login', [AuthController::class, 'login'])->middleware('thrott
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
+    Route::get('/tableau-de-bord', TableauDeBordController::class);
 
     // --- Structure académique ---------------------------------------------
     Route::get('/annee-active', [AnneeScolaireController::class, 'active']);
