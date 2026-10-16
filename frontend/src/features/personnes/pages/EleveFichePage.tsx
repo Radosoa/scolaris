@@ -1,4 +1,4 @@
-import { ArrowLeft, Camera, KeyRound, Loader2, Pencil, School, Trash2, Users } from 'lucide-react'
+import { ArrowLeft, Camera, KeyRound, Loader2, Pencil, School, Trash2, Users, Wallet } from 'lucide-react'
 import { useRef } from 'react'
 import { Link, useParams } from 'react-router'
 import { toast } from 'sonner'
@@ -38,6 +38,8 @@ export function EleveFichePage() {
   const { user, hasRole } = useAuth()
   const peutGerer = user?.permissions.includes('eleves.gerer') ?? false
   const peutInscrire = user?.permissions.includes('inscriptions.gerer') ?? false
+  // Le secrétariat et les parents (de cet élève : l'API le vérifie) suivent les paiements
+  const voitFinances = (user?.permissions.includes('paiements.gerer') ?? false) || hasRole('parent')
   const retour = hasRole('parent')
     ? { to: '/mes-enfants', label: 'Mes enfants' }
     : hasRole('eleve')
@@ -71,12 +73,22 @@ export function EleveFichePage() {
             title={`${eleve.prenom} ${eleve.nom.toUpperCase()}`}
             description={`Matricule ${eleve.matricule}${active?.statut === 'inscrit' ? ` · ${active.classe?.nom}` : ''}`}
             actions={
-              peutGerer && (
-                <Button variant="outline" onClick={() => edition.ouvrir()}>
-                  <Pencil />
-                  Modifier
-                </Button>
-              )
+              <>
+                {voitFinances && active && (
+                  <Button variant="outline" asChild>
+                    <Link to={`/paiements/eleves/${eleve.id}`}>
+                      <Wallet />
+                      Situation financière
+                    </Link>
+                  </Button>
+                )}
+                {peutGerer && (
+                  <Button variant="outline" onClick={() => edition.ouvrir()}>
+                    <Pencil />
+                    Modifier
+                  </Button>
+                )}
+              </>
             }
           />
         </div>

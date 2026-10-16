@@ -66,12 +66,6 @@ export function derniereOccurrence(jour: number, aujourdhui: string): string {
   return date.toISOString().slice(0, 10)
 }
 
-/** Date locale du jour au format AAAA-MM-JJ (pas toISOString, qui passe en UTC). */
-export function aujourdhuiIso(maintenant: Date = new Date()): string {
-  const deux = (n: number) => String(n).padStart(2, '0')
-  return `${maintenant.getFullYear()}-${deux(maintenant.getMonth() + 1)}-${deux(maintenant.getDate())}`
-}
-
 /** Décompte d'une feuille d'appel. */
 export function compterAppel(lignes: Pick<LigneAppel, 'statut'>[]): Record<StatutAppel, number> {
   return lignes.reduce(

@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  aujourdhuiIso,
   compterAppel,
   derniereOccurrence,
   formatHeure,
@@ -67,12 +66,6 @@ describe('derniereOccurrence', () => {
     expect(derniereOccurrence(5, '2026-10-16')).toBe('2026-10-16') // vendredi → aujourd'hui
     expect(derniereOccurrence(1, '2026-10-16')).toBe('2026-10-12') // lundi précédent
     expect(derniereOccurrence(6, '2026-10-16')).toBe('2026-10-10') // samedi de la semaine passée
-  })
-})
-
-describe('aujourdhuiIso', () => {
-  it('utilise la date locale', () => {
-    expect(aujourdhuiIso(new Date(2026, 0, 5, 23, 30))).toBe('2026-01-05')
   })
 })
 

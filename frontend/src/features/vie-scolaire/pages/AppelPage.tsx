@@ -11,11 +11,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { getErrorMessage } from '@/lib/api'
-import { formatDate } from '@/lib/format'
+import { aujourdhuiIso, formatDate } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { ErreurChargement } from '@/pages/ErrorPages'
 import { useCoursDuJour, useEnregistrerAppel, useFeuilleAppel } from '../api'
-import { aujourdhuiIso, compterAppel } from '../emploi-du-temps'
+import { compterAppel } from '../emploi-du-temps'
 import type { FeuilleAppel, LigneAppel, StatutAppel } from '../types'
 
 /** Professeur : choisir un de ses cours du jour, puis faire l'appel. */

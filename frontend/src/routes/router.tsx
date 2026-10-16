@@ -31,6 +31,8 @@ const ECRANS: Record<string, Chargeur> = {
   '/bulletins': () => import('@/features/bulletins/pages/BulletinsPage').then((m) => ({ Component: m.BulletinsPage })),
   '/appel': () => import('@/features/vie-scolaire/pages/AppelPage').then((m) => ({ Component: m.AppelPage })),
   '/absences': () => import('@/features/vie-scolaire/pages/AbsencesPage').then((m) => ({ Component: m.AbsencesPage })),
+  '/paiements': () => import('@/features/finances/pages/PaiementsPage').then((m) => ({ Component: m.PaiementsPage })),
+  '/annonces': () => import('@/features/annonces/pages/AnnoncesPage').then((m) => ({ Component: m.AnnoncesPage })),
   '/emploi-du-temps': () =>
     import('@/features/vie-scolaire/pages/EmploiDuTempsPage').then((m) => ({ Component: m.EmploiDuTempsPage })),
 }
@@ -43,6 +45,13 @@ interface SousPage {
 }
 
 const SOUS_PAGES: Record<string, SousPage[]> = {
+  '/paiements': [
+    {
+      // Un parent n'ouvre que la situation de ses enfants (403 sinon)
+      path: '/paiements/eleves/:id',
+      lazy: () => import('@/features/finances/pages/SituationElevePage').then((m) => ({ Component: m.SituationElevePage })),
+    },
+  ],
   '/bulletins': [
     {
       // Le secrétariat y accède depuis la fiche élève ; l'API ne sert que les bulletins autorisés (403 sinon)
