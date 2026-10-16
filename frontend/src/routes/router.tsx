@@ -29,6 +29,10 @@ const ECRANS: Record<string, Chargeur> = {
   '/mes-enfants': () => import('@/features/personnes/pages/MesEnfantsPage').then((m) => ({ Component: m.MesEnfantsPage })),
   '/notes': () => import('@/features/notes/pages/NotesPage').then((m) => ({ Component: m.NotesPage })),
   '/bulletins': () => import('@/features/bulletins/pages/BulletinsPage').then((m) => ({ Component: m.BulletinsPage })),
+  '/appel': () => import('@/features/vie-scolaire/pages/AppelPage').then((m) => ({ Component: m.AppelPage })),
+  '/absences': () => import('@/features/vie-scolaire/pages/AbsencesPage').then((m) => ({ Component: m.AbsencesPage })),
+  '/emploi-du-temps': () =>
+    import('@/features/vie-scolaire/pages/EmploiDuTempsPage').then((m) => ({ Component: m.EmploiDuTempsPage })),
 }
 
 interface SousPage {

@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/auth-context'
 import { ListeBulletins } from '@/features/bulletins/components/ListeBulletins'
 import { ReleveNotes } from '@/features/notes/components/ReleveNotes'
+import { AbsencesEleve } from '@/features/vie-scolaire/components/AbsencesEleve'
 import { useDialogState } from '@/hooks/use-dialog-state'
 import { getErrorMessage } from '@/lib/api'
 import { formatDate } from '@/lib/format'
@@ -201,6 +202,17 @@ export function EleveFichePage() {
             </CardHeader>
             <CardContent>
               <ListeBulletins eleveId={eleve.id} />
+            </CardContent>
+          </Card>
+        )}
+
+        {eleve.inscriptions && eleve.inscriptions.length > 0 && (
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Absences et retards</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <AbsencesEleve eleveId={eleve.id} />
             </CardContent>
           </Card>
         )}
