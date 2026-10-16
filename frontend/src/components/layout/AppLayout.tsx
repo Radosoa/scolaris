@@ -1,16 +1,20 @@
-import { Menu } from 'lucide-react'
+import { CalendarDays, Menu } from 'lucide-react'
 import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
+import { RechercheRapide } from './RechercheRapide'
 import { SidebarNav } from './SidebarNav'
-import { UserMenu } from './UserMenu'
 
 export function AppLayout() {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false)
+  // Date figée au montage (pas d'appel impur pendant le rendu)
+  const [aujourdhui] = useState(() =>
+    new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
+  )
 
   return (
-    <div className="min-h-svh bg-neutral-50">
+    <div className="min-h-svh bg-slate-50/80 dark:bg-background">
       {/* Sidebar fixe sur grand écran */}
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r bg-sidebar lg:block">
         <SidebarNav />
@@ -18,7 +22,7 @@ export function AppLayout() {
 
       {/* Tiroir sur mobile et tablette */}
       <Sheet open={menuMobileOuvert} onOpenChange={setMenuMobileOuvert}>
-        <SheetContent side="left" className="w-64 bg-sidebar p-0">
+        <SheetContent side="left" className="w-72 bg-sidebar p-0">
           <SheetTitle className="sr-only">Navigation</SheetTitle>
           <SheetDescription className="sr-only">Menu principal de l'application</SheetDescription>
           <SidebarNav onNavigate={() => setMenuMobileOuvert(false)} />
@@ -26,7 +30,7 @@ export function AppLayout() {
       </Sheet>
 
       <div className="lg:pl-64">
-        <header className="sticky top-0 z-10 flex h-14 items-center gap-2 border-b bg-background/95 px-4 backdrop-blur">
+        <header className="sticky top-0 z-10 flex h-16 items-center gap-3 border-b bg-background/80 px-4 backdrop-blur-md sm:px-6">
           <Button
             variant="ghost"
             size="icon"
@@ -36,12 +40,14 @@ export function AppLayout() {
           >
             <Menu />
           </Button>
-          <div className="ml-auto">
-            <UserMenu />
-          </div>
+          <RechercheRapide />
+          <p className="ml-auto hidden items-center gap-2 text-sm text-muted-foreground md:flex">
+            <CalendarDays className="size-4" />
+            <span className="first-letter:uppercase">{aujourdhui}</span>
+          </p>
         </header>
 
-        <main className="mx-auto w-full max-w-7xl p-4 sm:p-6">
+        <main className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
           <Outlet />
         </main>
       </div>
