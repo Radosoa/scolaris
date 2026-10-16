@@ -18,6 +18,9 @@ use App\Http\Controllers\Api\Structure\ClasseController;
 use App\Http\Controllers\Api\Structure\MatiereController;
 use App\Http\Controllers\Api\Structure\NiveauController;
 use App\Http\Controllers\Api\Structure\PeriodeController;
+use App\Http\Controllers\Api\VieScolaire\AbsenceController;
+use App\Http\Controllers\Api\VieScolaire\AppelController;
+use App\Http\Controllers\Api\VieScolaire\EmploiDuTempsController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
@@ -80,6 +83,16 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/eleves/{eleve}/bulletins', [BulletinController::class, 'deLEleve']);
     Route::get('/affectations/{affectation}/appreciations', [AppreciationController::class, 'index']);
     Route::put('/affectations/{affectation}/appreciations', [AppreciationController::class, 'enregistrer']);
+
+    // --- Vie scolaire --------------------------------------------------------
+    Route::get('/emploi-du-temps', [EmploiDuTempsController::class, 'index']);
+    Route::apiResource('creneaux', EmploiDuTempsController::class)->only(['store', 'update', 'destroy'])->parameters(['creneaux' => 'creneau']);
+    Route::get('/appels', [AppelController::class, 'jour']);
+    Route::get('/creneaux/{creneau}/appel', [AppelController::class, 'show']);
+    Route::put('/creneaux/{creneau}/appel', [AppelController::class, 'update']);
+    Route::get('/absences', [AbsenceController::class, 'index']);
+    Route::put('/absences/{absence}/justification', [AbsenceController::class, 'justifier']);
+    Route::get('/eleves/{eleve}/absences', [AbsenceController::class, 'deLEleve']);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

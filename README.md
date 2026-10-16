@@ -57,6 +57,18 @@ docker compose exec api php artisan test   # backend : unitaires + fonctionnels 
 cd frontend && npm run test && npm run lint && npm run build
 ```
 
+## Vie scolaire
+
+- **Emploi du temps** construit par la direction, par classe ou par professeur. Un créneau est
+  refusé (422, messages détaillés) s'il chevauche un cours du même professeur, de la même classe
+  ou dans la même salle sur l'année scolaire. Deux cours qui se suivent (8 h – 9 h, 9 h – 10 h)
+  ne sont pas en conflit.
+- **Appel numérique** par le professeur, sur ses seuls créneaux : élèves présents par défaut,
+  absents sur la durée du cours, retards en minutes. L'appel est tracé même si tout le monde est
+  présent (table `appels`). Une justification déjà saisie est conservée si le statut ne change pas.
+- **Justification** par le secrétariat, pour une absence ou toute la journée de l'élève.
+- Les heures d'absence (justifiées / non justifiées) et les retards alimentent les bulletins.
+
 ## Bulletins automatiques
 
 Le calcul est isolé dans `MoyenneCalculator` (classe pure, sans base de données, couverte par

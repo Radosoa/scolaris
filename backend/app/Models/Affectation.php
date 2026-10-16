@@ -39,6 +39,12 @@ class Affectation extends Model
         return $this->belongsTo(Classe::class);
     }
 
+    /** @return HasMany<Creneau, $this> */
+    public function creneaux(): HasMany
+    {
+        return $this->hasMany(Creneau::class);
+    }
+
     /** @return HasMany<Evaluation, $this> */
     public function evaluations(): HasMany
     {
