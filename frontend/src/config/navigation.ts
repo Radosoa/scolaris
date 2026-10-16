@@ -10,6 +10,7 @@ import {
   Megaphone,
   School,
   UserCheck,
+  UserRoundPlus,
   UserRound,
   Users,
   Wallet,
@@ -51,9 +52,11 @@ export const NAVIGATION: NavGroup[] = [
   {
     label: 'Personnes',
     items: [
-      { label: 'Élèves', path: '/eleves', icon: GraduationCap, roles: ['admin', 'secretariat'] },
+      // Le professeur ne voit que les élèves de ses classes (filtré par l'API)
+      { label: 'Élèves', path: '/eleves', icon: GraduationCap, roles: ['admin', 'secretariat', 'professeur'] },
+      { label: 'Inscriptions', path: '/inscriptions', icon: UserRoundPlus, roles: ['admin', 'secretariat'] },
       { label: 'Parents', path: '/parents', icon: Users, roles: ['admin', 'secretariat'] },
-      { label: 'Enseignants', path: '/enseignants', icon: UserRound, roles: ['admin'] },
+      { label: 'Enseignants', path: '/enseignants', icon: UserRound, roles: ['admin', 'secretariat'] },
       { label: 'Mes enfants', path: '/mes-enfants', icon: Users, roles: ['parent'] },
     ],
   },
