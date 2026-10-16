@@ -5,7 +5,6 @@ import { AppLayout } from '@/components/layout/AppLayout'
 import { NAVIGATION } from '@/config/navigation'
 import { LoginPage } from '@/features/auth/LoginPage'
 import { ComingSoonPage } from '@/pages/ComingSoonPage'
-import { DashboardPage } from '@/pages/DashboardPage'
 import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages'
 import type { Role } from '@/types/auth'
 import { GuestRoute, ProtectedRoute, RoleRoute } from './guards'
@@ -116,7 +115,8 @@ export const router = createBrowserRouter([
         element: <AppLayout />,
         children: [
           { index: true, element: <Navigate to="/tableau-de-bord" replace /> },
-          { path: '/tableau-de-bord', element: <DashboardPage /> },
+          // Chargé à la demande : Recharts n'alourdit pas le bundle initial
+          { path: '/tableau-de-bord', lazy: () => import('@/pages/DashboardPage').then((m) => ({ Component: m.DashboardPage })) },
           ...rubriques,
           { path: '/acces-refuse', element: <ForbiddenPage /> },
           { path: '*', element: <NotFoundPage /> },
