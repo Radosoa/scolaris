@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Notes\EvaluationController;
+use App\Http\Controllers\Api\Notes\ReleveNotesController;
 use App\Http\Controllers\Api\Personnes\AffectationController;
 use App\Http\Controllers\Api\Personnes\EleveController;
 use App\Http\Controllers\Api\Personnes\EnseignantController;
@@ -54,6 +56,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('affectations', AffectationController::class)->except('show');
 
     Route::get('/moi/enfants', MesEnfantsController::class);
+
+    // --- Évaluations et notes ------------------------------------------------
+    Route::apiResource('evaluations', EvaluationController::class);
+    Route::get('/evaluations/{evaluation}/notes', [EvaluationController::class, 'grille']);
+    Route::put('/evaluations/{evaluation}/notes', [EvaluationController::class, 'enregistrerNotes']);
+    Route::get('/eleves/{eleve}/notes', ReleveNotesController::class);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

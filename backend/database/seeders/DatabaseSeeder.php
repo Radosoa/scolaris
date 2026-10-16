@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             DemoUserSeeder::class,
             StructureSeeder::class,
             PersonnesSeeder::class,
+            NotesSeeder::class,
         ]);
     }
 }

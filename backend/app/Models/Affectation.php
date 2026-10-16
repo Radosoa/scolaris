@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /** Un enseignant enseigne une matière dans une classe (l'année est celle de la classe). */
 #[Table('affectations')]
@@ -36,5 +37,11 @@ class Affectation extends Model
     public function classe(): BelongsTo
     {
         return $this->belongsTo(Classe::class);
+    }
+
+    /** @return HasMany<Evaluation, $this> */
+    public function evaluations(): HasMany
+    {
+        return $this->hasMany(Evaluation::class);
     }
 }
