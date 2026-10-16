@@ -1,4 +1,4 @@
-import { Eye, FileUp, Pencil, Plus, Trash2 } from 'lucide-react'
+import { Eye, FileUp, Pencil, Plus, SearchX, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { toast } from 'sonner'
@@ -136,7 +136,9 @@ export function ElevesPage() {
         isFetching={requete.isFetching}
         meta={requete.data?.meta}
         onPageChange={liste.setPage}
-        emptyMessage="Aucun élève ne correspond à ces critères."
+        emptyMessage="Aucun élève trouvé"
+        emptyDescription="Vérifiez l’orthographe ou élargissez les filtres (classe, recherche)."
+        emptyIcon={SearchX}
       />
 
       <EleveFormDialog

@@ -1,4 +1,4 @@
-import { Ban, FileDown, Wallet } from 'lucide-react'
+import { BadgeCheck, Ban, FileDown, Receipt, Wallet } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
@@ -96,7 +96,8 @@ function Impayes() {
     },
     {
       header: 'Actions',
-      className: 'w-12 text-right',
+      // Sur mobile, le nom de l'élève (lien) suffit
+      className: 'hidden w-12 text-right sm:table-cell',
       cell: (s) => (
         <RowActions
           label={`${s.eleve.prenom} ${s.eleve.nom}`}
@@ -139,7 +140,9 @@ function Impayes() {
         isFetching={requete.isFetching}
         meta={requete.data?.meta}
         onPageChange={liste.setPage}
-        emptyMessage={statut === 'en_retard' ? 'Aucune famille en retard de paiement.' : 'Aucun élève.'}
+        emptyMessage={statut === 'en_retard' ? 'Aucune famille en retard' : 'Aucun élève'}
+        emptyDescription={statut === 'en_retard' ? 'Toutes les tranches échues ont été réglées.' : 'Aucun élève ne correspond à ces critères.'}
+        emptyIcon={statut === 'en_retard' ? BadgeCheck : Wallet}
       />
     </>
   )
@@ -237,7 +240,9 @@ function Journal() {
         isFetching={requete.isFetching}
         meta={requete.data?.meta}
         onPageChange={liste.setPage}
-        emptyMessage="Aucun paiement sur cette période."
+        emptyMessage="Aucun paiement"
+        emptyDescription="Aucun encaissement ne correspond à ces critères."
+        emptyIcon={Receipt}
       />
       <AnnulationDialog open={annulation.open} onOpenChange={annulation.setOpen} paiement={annulation.item} />
     </>

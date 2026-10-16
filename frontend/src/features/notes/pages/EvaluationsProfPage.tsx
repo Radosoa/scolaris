@@ -158,7 +158,17 @@ export function EvaluationsProfPage() {
         data={liste.data?.data}
         isLoading={liste.isPending && !!affectationId}
         isFetching={liste.isFetching}
-        emptyMessage="Aucune évaluation sur cette période."
+        emptyMessage="Aucune évaluation sur cette période"
+        emptyDescription={periode?.cloturee ? 'La période est clôturée.' : 'Créez un devoir, une interrogation ou la composition, puis saisissez les notes.'}
+        emptyIcon={ClipboardPen}
+        emptyAction={
+          periode && !periode.cloturee && affectation && (
+            <Button size="sm" onClick={() => formulaire.ouvrir()}>
+              <Plus />
+              Nouvelle évaluation
+            </Button>
+          )
+        }
       />
 
       {affectation && periode && (

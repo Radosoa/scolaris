@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX } from 'lucide-react'
+import { CalendarX2, CircleCheck, CircleX } from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
@@ -158,7 +158,9 @@ function SuiviAbsences() {
         isFetching={requete.isFetching}
         meta={requete.data?.meta}
         onPageChange={liste.setPage}
-        emptyMessage={statut === 'a_justifier' ? 'Aucune absence à justifier.' : 'Aucune absence.'}
+        emptyMessage={statut === 'a_justifier' ? 'Aucune absence à justifier' : 'Aucune absence'}
+        emptyDescription={statut === 'a_justifier' ? 'Toutes les absences relevées lors des appels ont été traitées.' : 'Aucune absence ne correspond à ces critères.'}
+        emptyIcon={statut === 'a_justifier' ? CircleCheck : CalendarX2}
       />
 
       <JustificationDialog open={justification.open} onOpenChange={justification.setOpen} absence={justification.item} />
