@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatutInscription;
 use App\Policies\StructurePolicy;
 use Database\Factories\ClasseFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
@@ -39,16 +40,22 @@ class Classe extends Model
         return $this->belongsTo(AnneeScolaire::class);
     }
 
-    /**
-     * Inscriptions en cours (hors transferts et abandons) : elles occupent une place.
-     * Le modèle Inscription arrive en phase 3, on interroge donc la table directement.
-     */
+    /** @return HasMany<Inscription, $this> */
+    public function inscriptions(): HasMany
+    {
+        return $this->hasMany(Inscription::class);
+    }
+
+    /** @return HasMany<Affectation, $this> */
+    public function affectations(): HasMany
+    {
+        return $this->hasMany(Affectation::class);
+    }
+
+    /** Inscriptions en cours (hors transferts et abandons) : elles occupent une place. */
     public function effectif(): int
     {
-        return $this->getConnection()->table('inscriptions')
-            ->where('classe_id', $this->id)
-            ->where('statut', 'inscrit')
-            ->count();
+        return $this->inscriptions()->where('statut', StatutInscription::Inscrit)->count();
     }
 
     #[Scope]

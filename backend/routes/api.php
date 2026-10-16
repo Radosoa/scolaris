@@ -1,6 +1,13 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Personnes\AffectationController;
+use App\Http\Controllers\Api\Personnes\EleveController;
+use App\Http\Controllers\Api\Personnes\EnseignantController;
+use App\Http\Controllers\Api\Personnes\ImportEleveController;
+use App\Http\Controllers\Api\Personnes\InscriptionController;
+use App\Http\Controllers\Api\Personnes\MesEnfantsController;
+use App\Http\Controllers\Api\Personnes\TuteurController;
 use App\Http\Controllers\Api\Structure\AnneeScolaireController;
 use App\Http\Controllers\Api\Structure\ClasseController;
 use App\Http\Controllers\Api\Structure\MatiereController;
@@ -29,4 +36,27 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::apiResource('classes', ClasseController::class)->parameters(['classes' => 'classe']);
     Route::apiResource('matieres', MatiereController::class)->parameters(['matieres' => 'matiere']);
+
+    // --- Élèves, parents, enseignants ---------------------------------------
+    Route::get('/eleves/import/modele', [ImportEleveController::class, 'modele']);
+    Route::post('/eleves/import/analyse', [ImportEleveController::class, 'analyser']);
+    Route::post('/eleves/import', [ImportEleveController::class, 'importer']);
+    Route::apiResource('eleves', EleveController::class)->parameters(['eleves' => 'eleve']);
+    Route::post('/eleves/{eleve}/photo', [EleveController::class, 'definirPhoto']);
+    Route::delete('/eleves/{eleve}/photo', [EleveController::class, 'supprimerPhoto']);
+    Route::post('/eleves/{eleve}/compte', [EleveController::class, 'creerCompte']);
+
+    Route::apiResource('tuteurs', TuteurController::class);
+    Route::post('/tuteurs/{tuteur}/compte', [TuteurController::class, 'creerCompte']);
+
+    Route::apiResource('enseignants', EnseignantController::class);
+    Route::apiResource('inscriptions', InscriptionController::class)->except('show');
+    Route::apiResource('affectations', AffectationController::class)->except('show');
+
+    Route::get('/moi/enfants', MesEnfantsController::class);
 });
+
+// Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)
+Route::get('/eleves/{eleve}/photo', [EleveController::class, 'photo'])
+    ->middleware('signed')
+    ->name('eleves.photo');
