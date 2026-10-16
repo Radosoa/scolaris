@@ -16,6 +16,11 @@ export interface User {
   roles: Role[]
   permissions: string[]
   derniere_connexion_at: string | null
+  profil: {
+    eleve_id: number | null
+    tuteur_id: number | null
+    enseignant_id: number | null
+  }
 }
 
 export interface LoginPayload {

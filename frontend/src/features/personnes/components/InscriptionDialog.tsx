@@ -21,7 +21,7 @@ interface Props {
 
 /** Inscription dans une classe de l'année active, ou changement de classe / de statut. */
 export function InscriptionDialog({ open, onOpenChange, eleveId, nomEleve, inscription }: Props) {
-  const anneeActive = useAnneeActive()
+  const anneeActive = useAnneeActive({ enabled: open })
   const anneeId = inscription?.annee_scolaire_id ?? anneeActive.data?.id
   const listeClasses = classes.useList({ annee_scolaire_id: anneeId, per_page: 100 }, { enabled: open && !!anneeId })
   const enregistrer = useEnregistrerInscription()

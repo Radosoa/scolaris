@@ -64,7 +64,7 @@ export const NAVIGATION: NavGroup[] = [
     label: 'Pédagogie',
     items: [
       { label: 'Affectations', path: '/affectations', icon: ClipboardList, roles: ['admin'] },
-      { label: 'Notes', path: '/notes', icon: ClipboardCheck, roles: ['professeur', 'eleve'] },
+      { label: 'Notes', path: '/notes', icon: ClipboardCheck, roles: ['admin', 'professeur', 'eleve'] },
       { label: 'Bulletins', path: '/bulletins', icon: FileText, roles: ['admin', 'professeur', 'eleve', 'parent'] },
     ],
   },

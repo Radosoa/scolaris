@@ -27,6 +27,7 @@ const ECRANS: Record<string, Chargeur> = {
   '/affectations': () =>
     import('@/features/personnes/pages/AffectationsPage').then((m) => ({ Component: m.AffectationsPage })),
   '/mes-enfants': () => import('@/features/personnes/pages/MesEnfantsPage').then((m) => ({ Component: m.MesEnfantsPage })),
+  '/notes': () => import('@/features/notes/pages/NotesPage').then((m) => ({ Component: m.NotesPage })),
 }
 
 interface SousPage {
@@ -37,6 +38,13 @@ interface SousPage {
 }
 
 const SOUS_PAGES: Record<string, SousPage[]> = {
+  '/notes': [
+    {
+      path: '/notes/evaluations/:id',
+      lazy: () => import('@/features/notes/pages/GrilleNotesPage').then((m) => ({ Component: m.GrilleNotesPage })),
+      roles: ['admin', 'professeur'],
+    },
+  ],
   '/structure/annees': [
     {
       path: '/structure/annees/:id',

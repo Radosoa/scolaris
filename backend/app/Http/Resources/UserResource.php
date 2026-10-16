@@ -23,6 +23,12 @@ class UserResource extends JsonResource
             'roles' => $this->getRoleNames()->values(),
             'permissions' => $this->getAllPermissions()->pluck('name')->sort()->values(),
             'derniere_connexion_at' => $this->derniere_connexion_at?->toIso8601String(),
+            // Profils rattachés au compte (null si absent) : utilisés par les espaces élève / parent / professeur
+            'profil' => [
+                'eleve_id' => $this->eleve?->id,
+                'tuteur_id' => $this->tuteur?->id,
+                'enseignant_id' => $this->enseignant?->id,
+            ],
         ];
     }
 }

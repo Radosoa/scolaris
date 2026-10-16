@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useDialogState } from '@/hooks/use-dialog-state'
 import { formatDate } from '@/lib/format'
-import { NotFoundPage } from '@/pages/ErrorPages'
+import { ErreurChargement } from '@/pages/ErrorPages'
 import { annees, periodes, useBasculerCloture } from '../api'
 import { PeriodeFormDialog } from '../components/PeriodeFormDialog'
 import type { Periode } from '../types'
@@ -26,7 +26,7 @@ export function AnneeDetailPage() {
   const aSupprimer = useDialogState<Periode>()
   const aBasculer = useDialogState<Periode>()
 
-  if (annee.isError) return <NotFoundPage />
+  if (annee.isError) return <ErreurChargement error={annee.error} />
 
   const lignes = listePeriodes.data?.data ?? []
   const ordreSuivant = Math.max(0, ...lignes.map((p) => p.ordre)) + 1

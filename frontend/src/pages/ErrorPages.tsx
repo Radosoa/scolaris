@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 
@@ -22,6 +23,11 @@ export function ForbiddenPage() {
       message="Vous n'avez pas les droits nécessaires pour consulter cette page."
     />
   )
+}
+
+/** Page d'erreur adaptée à l'échec d'un chargement : 403 → accès refusé, sinon introuvable. */
+export function ErreurChargement({ error }: { error: unknown }) {
+  return axios.isAxiosError(error) && error.response?.status === 403 ? <ForbiddenPage /> : <NotFoundPage />
 }
 
 export function NotFoundPage() {

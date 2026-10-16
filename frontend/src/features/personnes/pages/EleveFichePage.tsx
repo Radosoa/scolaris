@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { ArrowLeft, Camera, KeyRound, Loader2, Pencil, School, Trash2, Users } from 'lucide-react'
 import { useRef } from 'react'
 import { Link, useParams } from 'react-router'
@@ -9,10 +8,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardAction, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/auth-context'
+import { ReleveNotes } from '@/features/notes/components/ReleveNotes'
 import { useDialogState } from '@/hooks/use-dialog-state'
 import { getErrorMessage } from '@/lib/api'
 import { formatDate } from '@/lib/format'
-import { ForbiddenPage, NotFoundPage } from '@/pages/ErrorPages'
+import { ErreurChargement } from '@/pages/ErrorPages'
 import { eleves, usePhotoEleve } from '../api'
 import { CompteDialog } from '../components/CompteDialog'
 import { EleveAvatar } from '../components/EleveAvatar'
@@ -47,9 +47,7 @@ export function EleveFichePage() {
   const compte = useDialogState<null>()
   const inscription = useDialogState<Inscription>()
 
-  if (requete.isError) {
-    return axios.isAxiosError(requete.error) && requete.error.response?.status === 403 ? <ForbiddenPage /> : <NotFoundPage />
-  }
+  if (requete.isError) return <ErreurChargement error={requete.error} />
   if (!requete.data) return <Skeleton className="h-96 w-full" />
 
   const eleve = requete.data
@@ -183,11 +181,23 @@ export function EleveFichePage() {
             )}
           </CardContent>
         </Card>
+
+        {eleve.inscriptions && eleve.inscriptions.length > 0 && (
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ReleveNotes eleveId={eleve.id} />
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       <EleveFormDialog open={edition.open} onOpenChange={edition.setOpen} eleve={eleve} />
       <ParentsDialog open={parents.open} onOpenChange={parents.setOpen} eleve={eleve} />
       <CompteDialog open={compte.open} onOpenChange={compte.setOpen} type="eleves" id={eleve.id} nom={eleve.nom_complet} />
+      {peutInscrire && (
       <InscriptionDialog
         open={inscription.open}
         onOpenChange={inscription.setOpen}
@@ -195,6 +205,7 @@ export function EleveFichePage() {
         nomEleve={eleve.nom_complet}
         inscription={inscription.item}
       />
+      )}
     </>
   )
 }

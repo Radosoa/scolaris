@@ -80,7 +80,18 @@ class AuthTest extends TestCase
             ->assertOk()
             ->assertJsonPath('data.email', $user->email)
             ->assertJsonPath('data.roles', ['professeur'])
-            ->assertJsonPath('data.permissions', ['absences.saisir', 'appreciations.saisir', 'notes.saisir']);
+            ->assertJsonPath('data.permissions', ['absences.saisir', 'appreciations.saisir', 'notes.saisir'])
+            ->assertJsonPath('data.profil', ['eleve_id' => null, 'tuteur_id' => null, 'enseignant_id' => null]);
+    }
+
+    public function test_me_expose_le_profil_eleve_rattache(): void
+    {
+        $user = $this->utilisateur(Role::Eleve);
+        $eleve = \App\Models\Eleve::factory()->create();
+        $eleve->user()->associate($user)->save();
+
+        $this->actingAs($user, 'sanctum')->getJson('/api/me')
+            ->assertJsonPath('data.profil.eleve_id', $eleve->id);
     }
 
     public function test_me_sans_token_renvoie_401_en_francais(): void

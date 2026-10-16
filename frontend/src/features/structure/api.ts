@@ -12,9 +12,10 @@ export const classes = createResource<Classe, ClasseValues>('classes', '/classes
 export const matieres = createResource<Matiere, MatiereValues>('matieres', '/matieres')
 
 /** Année active, ou null si aucune n'est configurée (404). */
-export function useAnneeActive() {
+export function useAnneeActive(options: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: ['annee-active'],
+    enabled: options.enabled,
     queryFn: async () => {
       try {
         return (await api.get<{ data: AnneeScolaire }>('/annee-active')).data.data
