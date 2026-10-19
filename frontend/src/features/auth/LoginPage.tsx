@@ -46,10 +46,12 @@ export function LoginPage() {
   const { login } = useAuth()
   const [erreur, setErreur] = useState<string | null>(null)
   const [motDePasseVisible, setMotDePasseVisible] = useState(false)
+  // Curseur sur le premier champ à remplir : le code s'il n'est pas encore connu
+  const [ecoleMemorisee] = useState(() => ecoleStorage.get())
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { ecole: ecoleStorage.get() ?? (AFFICHER_DEMO ? 'demo' : ''), email: '', password: '' },
+    defaultValues: { ecole: ecoleMemorisee ?? (AFFICHER_DEMO ? 'demo' : ''), email: '', password: '' },
   })
   const { errors, isSubmitting } = form.formState
 
@@ -115,6 +117,7 @@ export function LoginPage() {
                     <School className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
                       id="ecole"
+                      autoFocus={!ecoleMemorisee}
                       autoComplete="organization"
                       autoCapitalize="none"
                       spellCheck={false}
@@ -147,7 +150,7 @@ export function LoginPage() {
                     id="email"
                     type="email"
                     autoComplete="username"
-                    autoFocus
+                    autoFocus={!!ecoleMemorisee || !!ECOLE_DU_SOUS_DOMAINE}
                     placeholder="prenom.nom@exemple.fr"
                     className="h-11 pl-9"
                     aria-invalid={!!errors.email}
