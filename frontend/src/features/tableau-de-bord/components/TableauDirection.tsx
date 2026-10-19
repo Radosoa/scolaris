@@ -186,7 +186,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
           description={`${formatMontant(finances.encaisse)} encaissés depuis la rentrée`}
           action={<LienPanneau to="/paiements?onglet=journal">Journal</LienPanneau>}
         >
-          <div className="h-56">
+          <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={finances.par_mois.map((m) => ({ mois: libelleMois(m.mois), Encaissé: m.montant }))} margin={{ top: 20, right: 4, left: 0, bottom: 0 }}>
                 <CartesianGrid {...GRILLE} />
