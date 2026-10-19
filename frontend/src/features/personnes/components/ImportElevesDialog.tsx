@@ -176,14 +176,14 @@ export function ImportElevesDialog({ open, onOpenChange }: Props) {
         <DialogFooter>
           {resultat ? (
             <>
-              <Button variant="outline" onClick={reinitialiser}>
+              <Button variant="secondary" onClick={reinitialiser}>
                 Nouvel import
               </Button>
               <Button onClick={() => fermer(false)}>Terminer</Button>
             </>
           ) : (
             <>
-              <Button variant="outline" onClick={() => fermer(false)} disabled={enCours}>
+              <Button variant="secondary" onClick={() => fermer(false)} disabled={enCours}>
                 Annuler
               </Button>
               <Button onClick={lancerImport} disabled={!analyse || analyse.valides === 0 || enCours}>

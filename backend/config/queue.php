@@ -122,7 +122,8 @@ return [
 
     'failed' => [
         'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
-        'database' => env('DB_CONNECTION', 'sqlite'),
+        // Avec plusieurs écoles, la file vit dans la base centrale (DB_QUEUE_CONNECTION=central)
+        'database' => env('DB_QUEUE_CONNECTION', env('DB_CONNECTION', 'sqlite')),
         'table' => 'failed_jobs',
     ],
 

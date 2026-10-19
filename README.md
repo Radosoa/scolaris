@@ -210,7 +210,8 @@ cp backend/.env.example backend/.env
 docker compose run --rm api composer install
 docker compose run --rm api php artisan key:generate
 docker compose up -d
-docker compose exec api php artisan migrate --seed
+docker compose exec api php artisan migrate --database=central --path=database/migrations/central
+docker compose exec api php artisan ecole:creer demo "Collège Jean Moulin" --demo
 
 # 2. Frontend
 cd frontend
@@ -222,12 +223,55 @@ npm run dev
 - Application : http://localhost:5173
 - API : http://localhost:8001
 - MySQL depuis l'hôte : `127.0.0.1:3307` (utilisateur `scolaris` / `secret`)
+- Code de l'établissement à saisir à la connexion : **`demo`** (base `scolaris500001`)
 - Réinitialiser la démonstration : `docker compose exec api php artisan migrate:fresh --seed`
+  (agit sur `DB_DATABASE`, la base de l'école `demo`)
 
 Le jeu de démonstration est calé sur la date du jour : l'année active est celle en cours, les
 appels et absences vont de la rentrée à la veille, et le premier trimestre est clôturé (en avance
 si besoin) pour montrer des bulletins. Classes « A » : bulletins validés ; 5e B : bulletins à
 calculer ; autres classes : brouillons où les professeurs peuvent saisir leurs appréciations.
+
+## Multi-établissement (une base par école)
+
+Plusieurs écoles partagent la même application, chacune avec **sa propre base de données** :
+
+- **Base centrale** `scolaris_central` : la liste des écoles (code, nom, base, active ou suspendue)
+  et la file des tâches de fond.
+- **Une base par école**, numérotée dans l'ordre de création : `scolaris500001`, `scolaris500002`…
+  Elle contient toutes les tables métier, les comptes et les notifications de l'école.
+- **Choix de l'école** : code saisi sur la page de connexion (mémorisé par le navigateur) ou
+  sous-domaine (`lycee-andohalo.scolaris.mg`). Le front l'envoie dans l'en-tête `X-Ecole` ; l'API
+  bascule alors sur la base de l'école avant toute authentification.
+- **Isolation** : comptes, jetons, fichiers (`storage/app/private/ecoles/<code>`), cache, tâches
+  de fond et relances quotidiennes s'exécutent dans le contexte de leur école.
+- L'identité de l'école (nom, adresse, téléphone…) se modifie dans **Paramètres** par la direction.
+
+Commandes d'exploitation :
+
+```bash
+docker compose exec api php artisan ecole:creer lycee-andohalo "Lycée Andohalo" --email=direction@lycee-andohalo.mg --mot-de-passe=...
+docker compose exec api php artisan ecole:lister
+docker compose exec api php artisan ecole:migrer               # après une mise à jour : base centrale + toutes les écoles
+docker compose exec api php artisan ecole:suspendre lycee-andohalo  # --reactiver pour rouvrir l'accès
+```
+
+`ECOLES_MULTI=false` revient au fonctionnement à une seule école (base `DB_DATABASE`, sans code
+à la connexion) ; c'est le mode des tests automatisés.
+
+**Mettre à jour une installation existante (mono-école)** : la base `scolaris` est copiée dans
+`scolaris500001` (l'ancienne reste en sauvegarde), puis rattachée comme école `demo`.
+
+```bash
+docker compose exec -T mysql mysql -uroot -proot < docker/mysql/init.sql
+docker compose exec mysql sh -c 'mysql -uroot -proot -e "CREATE DATABASE scolaris500001" && mysqldump -uroot -proot scolaris | mysql -uroot -proot scolaris500001'
+# backend/.env : DB_DATABASE=scolaris500001, DB_CENTRAL_DATABASE=scolaris_central,
+#                DB_QUEUE_CONNECTION=central, ECOLES_MULTI=true
+docker compose exec api php artisan config:clear
+docker compose exec api php artisan migrate --database=central --path=database/migrations/central
+docker compose exec api php artisan ecole:importer demo "Collège Jean Moulin" --base=scolaris500001
+docker compose restart worker scheduler
+```
 
 ## Comptes de démonstration
 
@@ -265,11 +309,20 @@ npm run lint && npm run build                # oxlint, vérification TypeScript 
   Variables minimales : `APP_KEY`, `APP_URL`, `FRONTEND_URL`, `DB_*` ; `.env.example` est commenté.
   Le port est lu dans `$PORT` et les migrations s'exécutent au démarrage
   (`RUN_MIGRATIONS=false` pour les désactiver).
+  En multi-établissement, le démarrage lance `ecole:migrer` et, si `ECOLE_DEMO_CODE` est défini,
+  crée l'école de démonstration au premier lancement (en arrière-plan).
+- **Démo gratuite** : `render.yaml` (Blueprint Render) décrit l'API ; MySQL chez un fournisseur
+  qui autorise `CREATE DATABASE` (Aiven, TiDB Cloud). Certificat SSL du fournisseur dans
+  `DB_SSL_CA_PEM`. Le service gratuit se met en veille après 15 min (premier appel ~1 min).
 - **Sans worker permanent**, utiliser `QUEUE_CONNECTION=sync` : la génération des PDF d'une classe
   (~10 s pour 25 élèves) s'exécute alors dans la requête. Les PDF sont stockés sur le disque local
   du conteneur ; un PDF individuel disparu est régénéré à la demande.
-- L'en-tête des documents (nom, adresse, ville, chef d'établissement) se configure avec les
-  variables `ECOLE_*`.
+- L'en-tête des documents (nom, adresse, ville, chef d'établissement) se modifie dans Paramètres ;
+  les variables `ECOLE_*` servent de valeurs par défaut en mode école unique.
+- **Avertissements de retard d'écolage** : la commande `php artisan scolaris:relancer-impayes`
+  avertit chaque matin à 7 h les parents (une fois par tranche impayée) et envoie un récapitulatif
+  à la direction et au secrétariat (cloche de l'application + e-mail, `MAIL_*`). En Docker, le
+  service `scheduler` s'en charge ; ailleurs, planifier `php artisan schedule:run` chaque minute (cron).
 
 ## Choix techniques
 

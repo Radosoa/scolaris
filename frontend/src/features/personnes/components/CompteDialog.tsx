@@ -1,3 +1,4 @@
+import { KeyRound } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -40,6 +41,7 @@ export function CompteDialog({ open, onOpenChange, type, id, nom, emailSuggere }
 
   return (
     <FormDialog
+      icone={KeyRound}
       open={open}
       onOpenChange={onOpenChange}
       title={`Créer le compte de ${nom}`}

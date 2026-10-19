@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Finances;
 
 use App\Models\Frais;
+use App\Services\ParametresService;
+use App\Support\Devise;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -35,7 +37,7 @@ class FraisRequest extends FormRequest
                     ->where('annee_scolaire_id', $frais?->annee_scolaire_id ?? $this->input('annee_scolaire_id'))
                     ->ignore($frais?->id),
             ],
-            'montant' => ['required', 'numeric', 'min:0.01', 'max:99999999', 'decimal:0,2'],
+            'montant' => ['required', 'numeric', 'min:0.01', 'max:99999999', 'decimal:0,'.$this->devise()->decimales],
         ];
     }
 
@@ -47,7 +49,12 @@ class FraisRequest extends FormRequest
         return [
             'libelle.unique' => 'Ce niveau a déjà une ligne de frais portant ce libellé.',
             'montant.min' => 'Le montant doit être positif.',
-            'montant.decimal' => 'Deux décimales au maximum.',
+            'montant.decimal' => $this->devise()->decimales === 0 ? 'Montant sans décimales attendu.' : 'Deux décimales au maximum.',
         ];
+    }
+
+    private function devise(): Devise
+    {
+        return app(ParametresService::class)->devise();
     }
 }

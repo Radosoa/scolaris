@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Middleware\IdentifierEcole;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Contracts\Auth\Middleware\AuthenticatesRequests;
 use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -22,6 +24,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // L'école est identifiée avant tout le reste (authentification, liaison des modèles)
+        $middleware->api(prepend: [IdentifierEcole::class]);
+        $middleware->prependToPriorityList(before: AuthenticatesRequests::class, prepend: IdentifierEcole::class);
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,

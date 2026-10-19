@@ -3,17 +3,21 @@
 namespace App\Services\Finances;
 
 use App\Models\Paiement;
+use App\Services\ParametresService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 
 /** Reçu de paiement PDF (gabarit resources/views/pdf/recu.blade.php). */
 class RecuPdfService
 {
-    public function __construct(private readonly FinancesService $finances) {}
+    public function __construct(
+        private readonly FinancesService $finances,
+        private readonly ParametresService $parametres,
+    ) {}
 
     public function contenu(Paiement $paiement): string
     {
-        return Pdf::loadView('pdf.recu', ['ecole' => config('ecole'), 'r' => $this->donnees($paiement)])
+        return Pdf::loadView('pdf.recu', ['ecole' => $this->parametres->identite(), 'r' => $this->donnees($paiement)])
             ->setPaper('a5', 'landscape')
             ->output();
     }
@@ -41,7 +45,8 @@ class RecuPdfService
                 ->sum('montant')
         );
 
-        $euros = fn (int $centimes) => number_format($centimes / 100, 2, ',', ' ').' €';
+        $devise = $this->parametres->devise();
+        $euros = fn (int $centimes) => $devise->formater($centimes);
 
         return [
             'numero' => $paiement->numero_recu,
@@ -55,14 +60,14 @@ class RecuPdfService
             'classe' => $inscription->classe->nom,
             'annee' => $inscription->anneeScolaire->libelle,
             'montant' => $euros(FinancesService::centimes($paiement->montant)),
-            'montant_lettres' => ucfirst(MontantEnLettres::euros($paiement->montant)),
+            'montant_lettres' => ucfirst(MontantEnLettres::montant($paiement->montant, $devise)),
             'mode' => $paiement->mode->libelle(),
             'reference' => $paiement->reference,
             'total' => $euros($total),
             'cumul' => $euros($cumul),
             'reste' => $euros(max(0, $total - $cumul)),
             'encaisse_par' => $paiement->encaissePar?->name,
-            'fait_le' => sprintf('Fait à %s, le %s', config('ecole.ville'), $paiement->created_at->format('d/m/Y')),
+            'fait_le' => sprintf('Fait à %s, le %s', $this->parametres->identite()['ville'], $paiement->created_at->format('d/m/Y')),
         ];
     }
 }

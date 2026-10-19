@@ -1,3 +1,4 @@
+import { ClipboardCheck } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -63,6 +64,7 @@ export function EvaluationFormDialog({ open, onOpenChange, affectationId, period
 
   return (
     <FormDialog
+      icone={ClipboardCheck}
       open={open}
       onOpenChange={onOpenChange}
       title={evaluation ? `Modifier « ${evaluation.titre} »` : 'Nouvelle évaluation'}

@@ -1,0 +1,66 @@
+# API Scolaris sur Render (offre gratuite) : Blueprint à importer depuis le tableau de bord Render.
+# Les valeurs « sync: false » sont demandées à la création (secrets, base MySQL externe).
+services:
+  - type: web
+    name: scolaris-api
+    runtime: docker
+    plan: free
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /up
+    autoDeploy: true
+    envVars:
+      - key: APP_NAME
+        value: Scolaris
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false # sortie de : docker compose exec api php artisan key:generate --show
+      - key: APP_URL
+        sync: false # ex. https://scolaris-api.onrender.com
+      - key: FRONTEND_URL
+        sync: false # ex. https://scolaris.vercel.app
+      - key: APP_LOCALE
+        value: fr
+      - key: LOG_CHANNEL
+        value: stderr
+
+      # MySQL hébergé (Aiven, TiDB Cloud…) : l'utilisateur doit pouvoir créer des bases
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_CENTRAL_DATABASE
+        sync: false # base existante qui servira de base centrale (ex. defaultdb chez Aiven)
+      - key: DB_DATABASE
+        value: scolaris500001
+      - key: DB_SSL_CA_PEM
+        sync: false # certificat CA du fournisseur MySQL (texte complet du fichier .pem)
+
+      # Une base par école ; l'école de démonstration est créée au premier démarrage
+      - key: ECOLES_MULTI
+        value: "true"
+      - key: ECOLE_DEMO_CODE
+        value: demo
+      - key: ECOLE_DEMO_NOM
+        value: Collège de démonstration
+      - key: ECOLE_DEVISE
+        value: MGA
+
+      # Offre gratuite : pas de worker permanent ni de disque persistant
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: CACHE_STORE
+        value: database
+      - key: SESSION_DRIVER
+        value: array
+      - key: MAIL_MAILER
+        value: log

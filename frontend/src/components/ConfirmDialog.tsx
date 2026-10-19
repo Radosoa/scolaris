@@ -1,4 +1,4 @@
-import { Loader2 } from 'lucide-react'
+import { CircleHelp, Loader2, TriangleAlert } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import {
@@ -8,6 +8,7 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
@@ -55,13 +56,30 @@ export function ConfirmDialog({
     <AlertDialog open={open} onOpenChange={(ouvert) => !enCours && onOpenChange(ouvert)}>
       <AlertDialogContent>
         <AlertDialogHeader>
+          <AlertDialogMedia
+            className={
+              destructive
+                ? 'bg-red-50 text-red-600 ring-1 ring-red-100 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20'
+                : 'bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20'
+            }
+          >
+            {destructive ? <TriangleAlert /> : <CircleHelp />}
+          </AlertDialogMedia>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel disabled={enCours}>Annuler</AlertDialogCancel>
+          <AlertDialogCancel variant="secondary" disabled={enCours}>
+            Annuler
+          </AlertDialogCancel>
           {/* Bouton simple plutôt qu'AlertDialogAction, qui fermerait la modale avant la fin de l'appel */}
-          <Button variant={destructive ? 'destructive' : 'default'} onClick={confirmer} disabled={enCours}>
+          <Button
+            variant={destructive ? 'destructive' : 'default'}
+            // Rouge plein : l'action irréversible doit se voir au premier regard
+            className={destructive ? 'bg-red-600 text-white hover:bg-red-700 dark:bg-red-500/90 dark:hover:bg-red-500' : undefined}
+            onClick={confirmer}
+            disabled={enCours}
+          >
             {enCours && <Loader2 className="animate-spin" />}
             {confirmLabel}
           </Button>

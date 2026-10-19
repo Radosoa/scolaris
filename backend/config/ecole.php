@@ -18,4 +18,7 @@ return [
     'ville' => env('ECOLE_VILLE', 'Lyon'),
     'chef_etablissement' => env('ECOLE_CHEF_ETABLISSEMENT', 'Le Principal'),
 
+    // Devise tant que la direction n'en a pas choisi une dans les paramètres (code ISO : MGA, EUR, USD…)
+    'devise' => env('ECOLE_DEVISE', 'EUR'),
+
 ];

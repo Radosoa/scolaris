@@ -54,6 +54,9 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Adresse de l'application web (liens des e-mails) : première origine de FRONTEND_URL
+    'frontend_url' => trim(explode(',', (string) env('FRONTEND_URL', 'http://localhost:5173'))[0]),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone

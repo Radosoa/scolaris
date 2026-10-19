@@ -1,3 +1,4 @@
+import { BookOpen } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -37,6 +38,7 @@ export function MatiereFormDialog({ open, onOpenChange, matiere }: Props) {
 
   return (
     <FormDialog
+      icone={BookOpen}
       open={open}
       onOpenChange={onOpenChange}
       title={matiere ? `Modifier ${matiere.nom}` : 'Nouvelle matière'}

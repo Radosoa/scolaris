@@ -3,6 +3,7 @@
 namespace Tests\Unit\Finances;
 
 use App\Services\Finances\MontantEnLettres;
+use App\Support\Devise;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -56,5 +57,20 @@ class MontantEnLettresTest extends TestCase
         $this->assertSame('vingt-deux euros et un centime', MontantEnLettres::euros('22.01'));
         $this->assertSame('un million d\'euros', MontantEnLettres::euros(1_000_000));
         $this->assertSame('un million deux cents euros', MontantEnLettres::euros(1_000_200));
+    }
+
+    #[Test]
+    public function les_montants_dans_les_autres_devises(): void
+    {
+        $ariary = Devise::depuisCode('MGA');
+        $this->assertSame('un million deux cent cinquante mille ariary', MontantEnLettres::montant(1_250_000, $ariary));
+        $this->assertSame('deux millions d\'ariary', MontantEnLettres::montant(2_000_000, $ariary));
+        // Sans sous-unité, le montant est arrondi à l'unité
+        $this->assertSame('mille deux cent cinquante et un ariary', MontantEnLettres::montant(1250.5, $ariary));
+
+        $dollar = Devise::depuisCode('USD');
+        $this->assertSame('trois millions de dollars', MontantEnLettres::montant(3_000_000, $dollar));
+        $this->assertSame('vingt dollars et un cent', MontantEnLettres::montant(20.01, $dollar));
+        $this->assertSame('cent cinquante mille francs CFA', MontantEnLettres::montant(150_000, Devise::depuisCode('XOF')));
     }
 }

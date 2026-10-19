@@ -7,6 +7,7 @@ use App\Models\Absence;
 use App\Models\Affectation;
 use App\Models\Appel;
 use App\Models\Bulletin;
+use App\Models\Classe;
 use App\Models\Creneau;
 use App\Models\Periode;
 use App\Models\Tuteur;
@@ -78,7 +79,18 @@ class TableauDeBordTest extends TestCase
             ->assertJsonPath('data.finances.attendu', 3751.5)
             ->assertJsonPath('data.finances.encaisse', 1550.5)
             ->assertJsonPath('data.finances.par_mois.0.mois', '2026-09')
-            ->assertJsonPath('data.finances.par_mois.1.montant', 300);
+            ->assertJsonPath('data.finances.par_mois.1.montant', 300)
+            // Bulletins : la seule période n'est pas clôturée → rien à traiter
+            ->assertJsonPath('data.bulletins.periode', null);
+
+        // Une fois la période clôturée : la 6e A a des bulletins validés
+        Periode::query()->update(['cloturee' => true]);
+        $autre = Classe::factory()->for($this->annee)->create(['nom' => '6e B', 'niveau_id' => $this->classe->niveau_id]);
+        $this->getJson('/api/tableau-de-bord')
+            ->assertJsonPath('data.bulletins.periode.libelle', 'Trimestre 1')
+            ->assertJsonPath('data.bulletins.valides', 1)
+            ->assertJsonPath('data.bulletins.a_calculer', [$autre->nom])
+            ->assertJsonPath('data.bulletins.a_valider', []);
     }
 
     public function test_tableau_de_bord_du_secretariat(): void

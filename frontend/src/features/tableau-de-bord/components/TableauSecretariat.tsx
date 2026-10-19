@@ -1,7 +1,7 @@
 import { CalendarX2, GraduationCap, Receipt, Wallet } from 'lucide-react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
-import { formatEuros } from '@/features/finances/format'
+import { formatMontant } from '@/features/finances/format'
 import { formatDate } from '@/lib/format'
 import type { TableauSecretariat as Donnees } from '../types'
 import { AnnoncesRecentes, Indicateur, Panneau } from './Elements'
@@ -13,9 +13,9 @@ export function TableauSecretariat({ donnees }: { donnees: Donnees }) {
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-        <Indicateur icone={GraduationCap} libelle="Élèves inscrits" valeur={String(donnees.eleves)} detail={`Année ${donnees.annee}`} lien="/inscriptions" />
+        <Indicateur icone={GraduationCap} teinte="indigo" libelle="Élèves inscrits" valeur={String(donnees.eleves)} detail={`Année ${donnees.annee}`} lien="/inscriptions" />
         <Indicateur
-          icone={CalendarX2}
+          icone={CalendarX2} teinte="ambre"
           libelle="Absences à justifier"
           valeur={String(absences.a_justifier)}
           detail={`${absences.aujourdhui} élève(s) absent(s) aujourd’hui`}
@@ -23,14 +23,14 @@ export function TableauSecretariat({ donnees }: { donnees: Donnees }) {
           lien="/absences"
         />
         <Indicateur
-          icone={Wallet}
+          icone={Wallet} teinte="ciel"
           libelle="Familles en retard"
           valeur={String(finances.en_retard)}
-          detail={`${formatEuros(finances.retard)} exigibles non réglés`}
+          detail={`${formatMontant(finances.retard)} exigibles non réglés`}
           alerte={finances.en_retard > 0}
           lien="/paiements"
         />
-        <Indicateur icone={Receipt} libelle="Encaissé sur 7 jours" valeur={formatEuros(semaine.montant)} detail={`${semaine.nombre} paiement(s)`} lien="/paiements?onglet=journal" />
+        <Indicateur icone={Receipt} teinte="emeraude" libelle="Encaissé sur 7 jours" valeur={formatMontant(semaine.montant)} detail={`${semaine.nombre} paiement(s)`} lien="/paiements?onglet=journal" />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
@@ -53,7 +53,7 @@ export function TableauSecretariat({ donnees }: { donnees: Donnees }) {
                     {p.classe} · {formatDate(p.date)} · <span className="font-mono">{p.numero_recu}</span>
                   </p>
                 </div>
-                {p.annule ? <Badge variant="destructive">Annulé</Badge> : <span className="font-medium tabular-nums">{formatEuros(p.montant)}</span>}
+                {p.annule ? <Badge variant="destructive">Annulé</Badge> : <span className="font-medium tabular-nums">{formatMontant(p.montant)}</span>}
               </li>
             ))}
           </ul>

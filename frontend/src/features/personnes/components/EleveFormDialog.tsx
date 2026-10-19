@@ -1,3 +1,4 @@
+import { GraduationCap } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -55,6 +56,7 @@ export function EleveFormDialog({ open, onOpenChange, eleve, onSaved }: Props) {
 
   return (
     <FormDialog
+      icone={GraduationCap}
       open={open}
       onOpenChange={onOpenChange}
       title={eleve ? `Modifier ${eleve.nom_complet}` : 'Nouvel élève'}

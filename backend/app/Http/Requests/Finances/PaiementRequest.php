@@ -4,6 +4,8 @@ namespace App\Http\Requests\Finances;
 
 use App\Enums\ModePaiement;
 use App\Models\Paiement;
+use App\Services\ParametresService;
+use App\Support\Devise;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -21,7 +23,7 @@ class PaiementRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'montant' => ['required', 'numeric', 'min:0.01', 'decimal:0,2'],
+            'montant' => ['required', 'numeric', 'min:0.01', 'decimal:0,'.$this->devise()->decimales],
             'date' => ['required', 'date_format:Y-m-d', 'before_or_equal:today'],
             'mode' => ['required', Rule::enum(ModePaiement::class)],
             'reference' => [Rule::requiredIf(fn () => ModePaiement::tryFrom((string) $this->input('mode'))?->exigeReference() ?? false), 'nullable', 'string', 'max:100'],
@@ -35,10 +37,15 @@ class PaiementRequest extends FormRequest
     {
         return [
             'montant.min' => 'Le montant doit être positif.',
-            'montant.decimal' => 'Deux décimales au maximum.',
+            'montant.decimal' => $this->devise()->decimales === 0 ? 'Montant sans décimales attendu.' : 'Deux décimales au maximum.',
             'date.before_or_equal' => 'La date du paiement ne peut pas être dans le futur.',
             'mode.enum' => 'Mode de paiement inconnu.',
             'reference.required' => 'Indiquez la référence (n° de chèque, de virement ou de transaction).',
         ];
+    }
+
+    private function devise(): Devise
+    {
+        return app(ParametresService::class)->devise();
     }
 }

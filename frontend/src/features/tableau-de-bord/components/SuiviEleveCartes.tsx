@@ -2,7 +2,7 @@ import { CalendarX2, FileText, Wallet } from 'lucide-react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { formatRang } from '@/features/bulletins/format'
-import { formatEuros } from '@/features/finances/format'
+import { formatMontant } from '@/features/finances/format'
 import { formatDate, formatNombre } from '@/lib/format'
 import type { SuiviEleve } from '../types'
 import { Indicateur, Panneau } from './Elements'
@@ -15,14 +15,14 @@ export function SuiviEleveCartes({ suivi }: { suivi: SuiviEleve }) {
     <div className="space-y-4">
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <Indicateur
-          icone={FileText}
+          icone={FileText} teinte="emeraude"
           libelle={b ? `Bulletin du ${b.periode}` : 'Bulletin'}
           valeur={b?.moyenne === null || !b ? '—' : `${formatNombre(b.moyenne)} / 20`}
           detail={b ? `${formatRang(b.rang)} sur ${b.effectif}${b.mention ? ` · ${b.mention}` : ''}` : 'Aucun bulletin publié'}
           lien={b ? `/bulletins/${b.id}` : undefined}
         />
         <Indicateur
-          icone={CalendarX2}
+          icone={CalendarX2} teinte="ambre"
           libelle="Absences"
           valeur={`${formatNombre(suivi.absences.heures_justifiees + suivi.absences.heures_non_justifiees)} h`}
           detail={`${formatNombre(suivi.absences.heures_non_justifiees)} h non justifiées · ${suivi.absences.retards} retard(s)`}
@@ -30,10 +30,10 @@ export function SuiviEleveCartes({ suivi }: { suivi: SuiviEleve }) {
         />
         {suivi.finances && (
           <Indicateur
-            icone={Wallet}
+            icone={Wallet} teinte="ciel"
             libelle="Frais de scolarité"
-            valeur={suivi.finances.retard > 0 ? formatEuros(suivi.finances.retard) : formatEuros(suivi.finances.reste)}
-            detail={suivi.finances.retard > 0 ? 'en retard de paiement' : `restent à payer sur ${formatEuros(suivi.finances.total)}`}
+            valeur={suivi.finances.retard > 0 ? formatMontant(suivi.finances.retard) : formatMontant(suivi.finances.reste)}
+            detail={suivi.finances.retard > 0 ? 'en retard de paiement' : `restent à payer sur ${formatMontant(suivi.finances.total)}`}
             alerte={suivi.finances.retard > 0}
             lien={`/paiements/eleves/${suivi.id}`}
           />
