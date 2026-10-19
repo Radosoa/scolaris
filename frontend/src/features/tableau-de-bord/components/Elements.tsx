@@ -20,11 +20,21 @@ interface IndicateurProps {
   suffixe?: string
   detail?: ReactNode
   icone: LucideIcon
+  /** Teinte de la pastille d'icône (identité de l'indicateur) */
+  teinte?: keyof typeof TEINTES
   alerte?: boolean
   lien?: string
   tendance?: Tendance
   /** Visuel sous le chiffre : jauge, mini-courbe… */
   children?: ReactNode
+}
+
+const TEINTES = {
+  indigo: 'bg-indigo-50 text-indigo-600 ring-indigo-100 dark:bg-indigo-500/10 dark:text-indigo-300 dark:ring-indigo-500/20',
+  emeraude: 'bg-emerald-50 text-emerald-600 ring-emerald-100 dark:bg-emerald-500/10 dark:text-emerald-300 dark:ring-emerald-500/20',
+  ambre: 'bg-amber-50 text-amber-600 ring-amber-100 dark:bg-amber-500/10 dark:text-amber-300 dark:ring-amber-500/20',
+  ciel: 'bg-sky-50 text-sky-600 ring-sky-100 dark:bg-sky-500/10 dark:text-sky-300 dark:ring-sky-500/20',
+  neutre: 'bg-muted/50 text-muted-foreground ring-border',
 }
 
 const TONS = {
@@ -34,13 +44,13 @@ const TONS = {
 }
 
 /** Indicateur clé : libellé, chiffre, tendance éventuelle et visuel de contexte. */
-export function Indicateur({ libelle, valeur, suffixe, detail, icone: Icone, alerte, lien, tendance, children }: IndicateurProps) {
+export function Indicateur({ libelle, valeur, suffixe, detail, icone: Icone, teinte = 'neutre', alerte, lien, tendance, children }: IndicateurProps) {
   const IconeTendance = tendance?.sens === 'hausse' ? ArrowUpRight : tendance?.sens === 'baisse' ? ArrowDownRight : Minus
 
   const contenu = (
     <div
       className={cn(
-        'group relative flex h-full flex-col gap-3 rounded-xl border bg-card p-4 shadow-xs transition-all',
+        'group relative flex h-full flex-col gap-3 rounded-xl border bg-card p-4 shadow-xs transition-all dark:shadow-none',
         lien && 'hover:border-indigo-200 hover:shadow-md hover:shadow-indigo-500/5 dark:hover:border-indigo-500/40',
       )}
     >
@@ -48,8 +58,8 @@ export function Indicateur({ libelle, valeur, suffixe, detail, icone: Icone, ale
         <p className="text-[13px] font-medium text-muted-foreground">{libelle}</p>
         <span
           className={cn(
-            'flex size-8 shrink-0 items-center justify-center rounded-lg border',
-            alerte ? 'border-red-200 bg-red-50 text-red-600 dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-300' : 'bg-muted/50 text-muted-foreground',
+            'flex size-9 shrink-0 items-center justify-center rounded-xl ring-1',
+            alerte ? 'bg-red-50 text-red-600 ring-red-100 dark:bg-red-500/10 dark:text-red-300 dark:ring-red-500/20' : TEINTES[teinte],
           )}
         >
           <Icone className="size-4" />
@@ -107,7 +117,7 @@ export function Panneau({
   className?: string
 }) {
   return (
-    <section className={cn('flex flex-col rounded-xl border bg-card shadow-xs', className)}>
+    <section className={cn('flex flex-col rounded-xl border bg-card shadow-xs dark:shadow-none', className)}>
       <header className="flex items-start justify-between gap-4 px-5 pt-4 pb-3">
         <div className="min-w-0">
           <h2 className="text-sm font-semibold">{titre}</h2>

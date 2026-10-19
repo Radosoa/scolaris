@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, CalendarClock } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { FormDialog } from '@/components/form/FormDialog'
@@ -43,6 +43,7 @@ export function EcheancierDialog({ open, onOpenChange, annee, echeances }: Props
 
   return (
     <FormDialog
+      icone={CalendarClock}
       open={open}
       onOpenChange={onOpenChange}
       title={`Échéancier ${annee.libelle}`}

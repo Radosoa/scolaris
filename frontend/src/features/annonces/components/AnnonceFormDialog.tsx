@@ -1,3 +1,4 @@
+import { Megaphone } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -85,9 +86,11 @@ export function AnnonceFormDialog({ open, onOpenChange, annonce }: Props) {
 
   return (
     <FormDialog
+      icone={Megaphone}
       open={open}
       onOpenChange={onOpenChange}
       title={annonce ? 'Modifier l’annonce' : 'Nouvelle annonce'}
+      description="Informez tout l’établissement, les professeurs, les parents ou une classe."
       onSubmit={onSubmit}
       isSubmitting={isSubmitting}
       submitLabel={annonce ? 'Enregistrer' : 'Publier'}

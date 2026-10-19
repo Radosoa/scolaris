@@ -1,3 +1,4 @@
+import { FileCheck2 } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -40,6 +41,7 @@ export function JustificationDialog({ open, onOpenChange, absence }: Props) {
 
   return (
     <FormDialog
+      icone={FileCheck2}
       open={open}
       onOpenChange={onOpenChange}
       title={absence?.type === 'retard' ? 'Justifier le retard' : 'Justifier l’absence'}

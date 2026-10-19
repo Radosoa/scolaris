@@ -1,3 +1,4 @@
+import { School } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -47,6 +48,7 @@ export function ClasseFormDialog({ open, onOpenChange, classe, anneeParDefaut }:
 
   return (
     <FormDialog
+      icone={School}
       open={open}
       onOpenChange={onOpenChange}
       title={classe ? `Modifier ${classe.nom}` : 'Nouvelle classe'}

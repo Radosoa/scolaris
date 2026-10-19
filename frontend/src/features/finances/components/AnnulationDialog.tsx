@@ -1,3 +1,4 @@
+import { Ban } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { Field } from '@/components/form/Field'
@@ -33,6 +34,7 @@ export function AnnulationDialog({ open, onOpenChange, paiement }: Props) {
 
   return (
     <FormDialog
+      icone={Ban}
       open={open}
       onOpenChange={onOpenChange}
       title={`Annuler le paiement ${paiement?.numero_recu ?? ''}`}

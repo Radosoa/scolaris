@@ -1,3 +1,4 @@
+import { Wallet } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -59,6 +60,7 @@ export function EncaissementDialog({ open, onOpenChange, situation }: Props) {
 
   return (
     <FormDialog
+      icone={Wallet}
       open={open}
       onOpenChange={onOpenChange}
       title="Encaisser un paiement"

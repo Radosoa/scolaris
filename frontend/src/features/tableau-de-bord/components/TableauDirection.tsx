@@ -34,6 +34,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Indicateur
           icone={GraduationCap}
+          teinte="indigo"
           libelle="Élèves inscrits"
           valeur={String(compteurs.eleves)}
           detail={`${compteurs.classes} classes · ${compteurs.enseignants} enseignants`}
@@ -47,6 +48,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
 
         <Indicateur
           icone={TrendingUp}
+          teinte="emeraude"
           libelle="Taux de réussite"
           valeur={formatPourcentage(resultats.taux_reussite)}
           detail={resultats.moyenne === null ? 'Aucun bulletin calculé' : `Moyenne générale ${formatNombre(resultats.moyenne)} / 20`}
@@ -60,6 +62,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
 
         <Indicateur
           icone={CalendarX2}
+          teinte="ambre"
           libelle="Absentéisme"
           valeur={formatPourcentage(absenteisme.taux, 2)}
           detail={`${formatNombre(absenteisme.heures_non_justifiees)} h non justifiées`}
@@ -74,7 +77,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
           <Sparkline valeurs={semaines} couleur={COULEURS.serie1} libelle="Heures d’absence par semaine depuis la rentrée" />
         </Indicateur>
 
-        <Indicateur icone={Wallet} libelle="Frais encaissés" valeur={formatMontant(finances.encaisse)} detail={`sur ${formatMontant(finances.attendu)} attendus`} lien="/paiements">
+        <Indicateur icone={Wallet} teinte="ciel" libelle="Frais encaissés" valeur={formatMontant(finances.encaisse)} detail={`sur ${formatMontant(finances.attendu)} attendus`} lien="/paiements">
           <div className="space-y-1.5">
             <Jauge pourcentage={partEncaissee} couleur={COULEURS.bon} libelle="Part des frais encaissée" />
             <p className="text-xs text-muted-foreground">{partEncaissee} % de l’année encaissés</p>

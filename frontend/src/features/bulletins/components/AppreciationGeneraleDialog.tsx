@@ -1,3 +1,4 @@
+import { MessageSquareText } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
@@ -42,6 +43,7 @@ export function AppreciationGeneraleDialog({ open, onOpenChange, bulletin }: Pro
 
   return (
     <FormDialog
+      icone={MessageSquareText}
       open={open}
       onOpenChange={onOpenChange}
       title="Appréciation générale"

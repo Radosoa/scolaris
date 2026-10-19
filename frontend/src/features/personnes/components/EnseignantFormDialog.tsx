@@ -1,3 +1,4 @@
+import { UserRound } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -59,6 +60,7 @@ export function EnseignantFormDialog({ open, onOpenChange, enseignant }: Props) 
 
   return (
     <FormDialog
+      icone={UserRound}
       open={open}
       onOpenChange={onOpenChange}
       title={enseignant ? `Modifier ${enseignant.nom_complet}` : 'Nouvel enseignant'}

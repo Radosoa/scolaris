@@ -1,3 +1,4 @@
+import { Receipt } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,6 +47,7 @@ export function FraisDialog({ open, onOpenChange, frais, niveau, anneeId }: Prop
 
   return (
     <FormDialog
+      icone={Receipt}
       open={open}
       onOpenChange={onOpenChange}
       title={frais ? `Modifier « ${frais.libelle} »` : `Nouveaux frais — ${niveau?.libelle ?? ''}`}
