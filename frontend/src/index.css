@@ -142,3 +142,28 @@
 .dark {
   color-scheme: dark;
 }
+
+/*
+ * Couleurs des graphiques (palette validée : séparation daltonisme et contraste,
+ * en clair comme en sombre). Les couleurs d'état ne servent qu'avec une légende ou une icône.
+ */
+:root {
+  --viz-1: #2a78d6;
+  --viz-2: #eb6834;
+  --viz-neutre: #c5c9d6;
+  --viz-bon: #0ca30c;
+  --viz-alerte: #e59a00;
+  --viz-critique: #d03b3b;
+  --viz-grille: #ececf1;
+  --viz-texte-bon: #006300;
+}
+.dark {
+  --viz-1: #3987e5;
+  --viz-2: #d95926;
+  --viz-neutre: #464a5c;
+  --viz-bon: #0ca30c;
+  --viz-alerte: #fab219;
+  --viz-critique: #e05252;
+  --viz-grille: #2a2d3b;
+  --viz-texte-bon: #2fbf2f;
+}

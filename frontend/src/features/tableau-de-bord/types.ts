@@ -22,6 +22,7 @@ export interface TableauDirection {
     par_semaine: { semaine: string; justifiees: number; non_justifiees: number }[]
   }
   finances: TotauxAnnee & { par_mois: { mois: string; montant: number }[] }
+  bulletins: { periode: { id: number; libelle: string } | null; a_calculer: string[]; a_valider: string[]; valides: number }
 }
 
 export interface TableauSecretariat {

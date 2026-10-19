@@ -1,4 +1,7 @@
+import { CalendarDays, CalendarX2, ClipboardCheck, FileText, Megaphone, UserCheck, Wallet, type LucideIcon } from 'lucide-react'
+import { Link } from 'react-router'
 import { PageHeader } from '@/components/PageHeader'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/features/auth/auth-context'
@@ -30,6 +33,7 @@ export function DashboardPage() {
       <PageHeader
         title={`Bonjour, ${user?.name.split(' ')[0] ?? ''}`}
         description={donnees ? INTRODUCTIONS[donnees.type] : undefined}
+        actions={donnees && <ActionsRapides type={donnees.type} />}
       />
       {requete.isError && <ErreurChargement error={requete.error} />}
       {requete.isPending && (
@@ -41,6 +45,36 @@ export function DashboardPage() {
       {donnees && <Contenu donnees={donnees} />}
     </>
   )
+}
+
+const ACTIONS: Record<TableauDeBord['type'], { libelle: string; lien: string; icone: LucideIcon }[]> = {
+  direction: [
+    { libelle: 'Nouvelle annonce', lien: '/annonces', icone: Megaphone },
+    { libelle: 'Bulletins', lien: '/bulletins', icone: FileText },
+  ],
+  secretariat: [
+    { libelle: 'Absences', lien: '/absences', icone: CalendarX2 },
+    { libelle: 'Encaisser un paiement', lien: '/paiements', icone: Wallet },
+  ],
+  professeur: [
+    { libelle: 'Saisir des notes', lien: '/notes', icone: ClipboardCheck },
+    { libelle: 'Faire l’appel', lien: '/appel', icone: UserCheck },
+  ],
+  eleve: [{ libelle: 'Emploi du temps', lien: '/emploi-du-temps', icone: CalendarDays }],
+  parent: [{ libelle: 'Bulletins', lien: '/bulletins', icone: FileText }],
+}
+
+/** Raccourcis vers les actions les plus fréquentes du rôle ; la dernière est mise en avant. */
+function ActionsRapides({ type }: { type: TableauDeBord['type'] }) {
+  const actions = ACTIONS[type]
+  return actions.map(({ libelle, lien, icone: Icone }, i) => (
+    <Button key={lien} asChild variant={i === actions.length - 1 ? 'default' : 'outline'}>
+      <Link to={lien}>
+        <Icone />
+        {libelle}
+      </Link>
+    </Button>
+  ))
 }
 
 function Contenu({ donnees }: { donnees: TableauDeBord }) {
