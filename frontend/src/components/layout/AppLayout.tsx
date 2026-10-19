@@ -6,6 +6,7 @@ import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/
 import { Skeleton } from '@/components/ui/skeleton'
 import { useParametres } from '@/features/etablissement/api'
 import { ChoixTheme } from './ChoixTheme'
+import { MenuUtilisateur } from './MenuUtilisateur'
 import { RechercheRapide } from './RechercheRapide'
 import { SidebarNav } from './SidebarNav'
 
@@ -51,6 +52,7 @@ export function AppLayout() {
             <span className="first-letter:uppercase">{aujourdhui}</span>
           </p>
           <ChoixTheme className="ml-auto md:ml-0" />
+          <MenuUtilisateur />
         </header>
 
         <main className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">

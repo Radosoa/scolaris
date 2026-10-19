@@ -167,3 +167,11 @@
   --viz-grille: #2a2d3b;
   --viz-texte-bon: #2fbf2f;
 }
+
+/* Défilement conservé (petits écrans) mais sans barre visible : menu latéral */
+@utility barre-invisible {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

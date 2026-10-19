@@ -1,27 +1,13 @@
-import { GraduationCap, LogOut } from 'lucide-react'
-import { NavLink, useNavigate } from 'react-router'
-import { toast } from 'sonner'
+import { GraduationCap } from 'lucide-react'
+import { NavLink } from 'react-router'
 import { navigationPour } from '@/config/navigation'
 import { useAuth } from '@/features/auth/auth-context'
 import { cn } from '@/lib/utils'
-import { ROLE_LIBELLES } from '@/types/auth'
-import { AvatarUtilisateur } from './AvatarUtilisateur'
 
 /** Contenu de la sidebar, partagé entre la version bureau et le tiroir mobile. */
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
-  const { user, logout } = useAuth()
-  const navigate = useNavigate()
+  const { user } = useAuth()
   const groupes = navigationPour(user?.roles ?? [])
-
-  const seDeconnecter = async () => {
-    try {
-      await logout()
-    } catch {
-      // La session locale est purgée même si l'appel échoue
-    }
-    toast.success('Vous êtes déconnecté.')
-    navigate('/connexion', { replace: true })
-  }
 
   return (
     <div className="flex h-full flex-col">
@@ -35,11 +21,11 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </div>
       </div>
 
-      <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-4" aria-label="Navigation principale">
+      <nav className="barre-invisible flex-1 space-y-4 overflow-y-auto px-3 pt-2 pb-4" aria-label="Navigation principale">
         {groupes.map((groupe, index) => (
           <div key={groupe.label ?? index} className="space-y-0.5">
             {groupe.label && (
-              <p className="px-3 pb-1.5 text-[11px] font-semibold tracking-wider text-muted-foreground/80 uppercase">{groupe.label}</p>
+              <p className="px-3 pb-1 text-[11px] font-semibold tracking-wider text-muted-foreground/80 uppercase">{groupe.label}</p>
             )}
             {groupe.items.map((item) => (
               <NavLink
@@ -48,7 +34,7 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
                 onClick={onNavigate}
                 className={({ isActive }) =>
                   cn(
-                    'group relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors',
+                    'group relative flex items-center gap-3 rounded-lg px-3 py-1.5 text-sm transition-colors',
                     isActive
                       ? 'bg-indigo-50 font-medium text-indigo-700 dark:bg-indigo-500/15 dark:text-indigo-200'
                       : 'text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground',
@@ -72,27 +58,6 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
           </div>
         ))}
       </nav>
-
-      {user && (
-        <div className="border-t p-3">
-          <div className="flex items-center gap-3 rounded-xl bg-sidebar-accent/60 p-2.5">
-            <AvatarUtilisateur nom={user.name} />
-            <div className="min-w-0 flex-1 leading-tight">
-              <p className="truncate text-sm font-medium">{user.name}</p>
-              <p className="truncate text-xs text-muted-foreground">{user.roles.map((role) => ROLE_LIBELLES[role]).join(', ')}</p>
-            </div>
-            <button
-              type="button"
-              onClick={seDeconnecter}
-              aria-label="Se déconnecter"
-              title="Se déconnecter"
-              className="flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-background hover:text-destructive"
-            >
-              <LogOut className="size-4" />
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
