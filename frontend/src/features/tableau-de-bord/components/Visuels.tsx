@@ -1,5 +1,5 @@
 import { useId } from 'react'
-import { Area, AreaChart, ResponsiveContainer } from 'recharts'
+import { Area, AreaChart, Cell, Pie, PieChart, ResponsiveContainer } from 'recharts'
 import { cn } from '@/lib/utils'
 
 /** Mini-courbe de tendance (2 px, aire à 10 %, point final), sans axes. */
@@ -46,6 +46,81 @@ export function Jauge({ pourcentage, couleur, libelle }: { pourcentage: number; 
   return (
     <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted" role="meter" aria-valuenow={borne} aria-valuemin={0} aria-valuemax={100} aria-label={libelle}>
       <div className="h-full rounded-full transition-[width] duration-700" style={{ width: `${borne}%`, background: couleur }} />
+    </div>
+  )
+}
+
+export interface PartDonut {
+  libelle: string
+  valeur: number
+  couleur: string
+}
+
+/**
+ * Donut : parts d'un total, chiffre clé au centre, légende chiffrée (valeur + %) à côté.
+ * Réservé à peu de parts (2 à 4) pour rester lisible d'un coup d'œil.
+ */
+export function Donut({
+  parts,
+  centre,
+  sousCentre,
+  formater = (v) => String(v),
+}: {
+  parts: PartDonut[]
+  centre: string
+  sousCentre: string
+  formater?: (valeur: number) => string
+}) {
+  const total = parts.reduce((t, p) => t + p.valeur, 0)
+  const pourcentage = (v: number) => (total ? Math.round((v / total) * 100) : 0)
+
+  return (
+    <div className="@container">
+      {/* Légende à côté du donut si le panneau est assez large, dessous sinon */}
+      <div className="flex flex-col items-center gap-5 @md:flex-row">
+        <div
+          className="relative size-40 shrink-0"
+          role="img"
+          aria-label={parts.map((p) => `${p.libelle} : ${formater(p.valeur)} (${pourcentage(p.valeur)} %)`).join(', ')}
+        >
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={total ? parts : [{ libelle: 'vide', valeur: 1, couleur: 'var(--muted)' }]}
+                dataKey="valeur"
+                nameKey="libelle"
+                innerRadius="72%"
+                outerRadius="100%"
+                startAngle={90}
+                endAngle={-270}
+                paddingAngle={total ? 2 : 0}
+                cornerRadius={4}
+                stroke="none"
+                isAnimationActive={false}
+              >
+                {(total ? parts : [{ libelle: 'vide', couleur: 'var(--muted)' }]).map((p) => (
+                  <Cell key={p.libelle} fill={p.couleur} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-2xl font-semibold tracking-tight tabular-nums">{centre}</span>
+            <span className="text-xs text-muted-foreground">{sousCentre}</span>
+          </div>
+        </div>
+  
+        <ul className="w-full min-w-0 flex-1 space-y-3">
+          {parts.map((p) => (
+            <li key={p.libelle} className="flex items-center gap-2 text-sm">
+              <span aria-hidden className="size-2.5 shrink-0 rounded-[3px]" style={{ background: p.couleur }} />
+              <span className="whitespace-nowrap text-muted-foreground">{p.libelle}</span>
+              <span className="ml-auto font-medium whitespace-nowrap tabular-nums">{formater(p.valeur)}</span>
+              <span className="w-10 text-right text-xs text-muted-foreground tabular-nums">{pourcentage(p.valeur)} %</span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   )
 }

@@ -8,7 +8,7 @@ import type { TableauDirection as Donnees } from '../types'
 import { ATraiter } from './ATraiter'
 import { Indicateur, LienPanneau, Panneau } from './Elements'
 import { AXE, COULEURS } from './graphiques'
-import { Infobulle, Jauge, Legende, Sparkline } from './Visuels'
+import { Donut, Infobulle, Jauge, Legende, Sparkline } from './Visuels'
 
 const GRILLE = { vertical: false, stroke: COULEURS.grille } as const
 const RAYON_HAUT: [number, number, number, number] = [4, 4, 0, 0]
@@ -82,35 +82,28 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
         </Indicateur>
       </div>
 
-      {/* Actions en attente et effectifs */}
-      <div className="grid gap-4 lg:grid-cols-3">
+      {/* Actions en attente, répartition filles / garçons, remplissage des classes */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         <ATraiter donnees={donnees} />
 
+        <Panneau titre="Filles et garçons" description="Répartition des élèves inscrits">
+          <Donut
+            centre={String(compteurs.eleves)}
+            sousCentre="élèves"
+            parts={[
+              { libelle: 'Garçons', valeur: garcons, couleur: COULEURS.serie1 },
+              { libelle: 'Filles', valeur: filles, couleur: COULEURS.serie2 },
+            ]}
+          />
+        </Panneau>
+
         <Panneau
-          className="lg:col-span-2"
+          className="md:col-span-2 lg:col-span-1"
           titre="Effectifs par classe"
           description={`${compteurs.eleves} élèves pour ${capacite} places`}
           action={<LienPanneau to="/structure/classes">Classes</LienPanneau>}
         >
-          <Repartition
-            segments={[
-              { libelle: 'Garçons', valeur: garcons, couleur: COULEURS.serie1 },
-              { libelle: 'Filles', valeur: filles, couleur: COULEURS.serie2 },
-            ]}
-            formater={(v) => String(v)}
-          />
-          <div className="mt-4 h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={effectifs.map((e) => ({ classe: e.classe.nom, Garçons: e.garcons, Filles: e.filles }))} margin={{ top: 8, right: 4, left: -16, bottom: 0 }}>
-                <CartesianGrid {...GRILLE} />
-                <XAxis dataKey="classe" tick={AXE} tickLine={false} axisLine={{ stroke: COULEURS.grille }} />
-                <YAxis tick={AXE} tickLine={false} axisLine={false} allowDecimals={false} />
-                <Tooltip cursor={{ fill: 'var(--muted)', opacity: 0.5 }} content={<Infobulle formater={(v) => `${v} élève(s)`} />} />
-                <Bar dataKey="Garçons" stackId="effectif" fill={COULEURS.serie1} maxBarSize={24} stroke="var(--card)" strokeWidth={2} />
-                <Bar dataKey="Filles" stackId="effectif" fill={COULEURS.serie2} maxBarSize={24} stroke="var(--card)" strokeWidth={2} radius={RAYON_HAUT} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+          <RemplissageClasses effectifs={effectifs} />
         </Panneau>
       </div>
 
@@ -166,6 +159,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
           <div className="h-56">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
+                barGap={2}
                 data={absenteisme.par_semaine.map((s) => ({ semaine: libelleSemaine(s.semaine), Justifiées: s.justifiees, 'Non justifiées': s.non_justifiees }))}
                 margin={{ top: 8, right: 4, left: -12, bottom: 0 }}
               >
@@ -176,8 +170,8 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
                   cursor={{ fill: 'var(--muted)', opacity: 0.5 }}
                   content={<Infobulle formater={(v) => `${formatNombre(v)} h`} titre={(l) => `Semaine du ${l}`} />}
                 />
-                <Bar dataKey="Justifiées" stackId="h" fill={COULEURS.neutre} maxBarSize={24} stroke="var(--card)" strokeWidth={2} />
-                <Bar dataKey="Non justifiées" stackId="h" fill={COULEURS.critique} maxBarSize={24} stroke="var(--card)" strokeWidth={2} radius={RAYON_HAUT} />
+                <Bar dataKey="Justifiées" fill={COULEURS.neutre} maxBarSize={14} radius={RAYON_HAUT} />
+                <Bar dataKey="Non justifiées" fill={COULEURS.critique} maxBarSize={14} radius={RAYON_HAUT} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -207,19 +201,21 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
           </div>
         </Panneau>
 
+
         <Panneau
           titre="État du recouvrement"
           description={`Exigible à ce jour : ${formatPourcentage(finances.pourcentage_exigible, 0)} des frais annuels`}
           action={<LienPanneau to="/paiements">Impayés</LienPanneau>}
         >
-          <Repartition
-            vertical
-            segments={[
+          <Donut
+            centre={`${partEncaissee} %`}
+            sousCentre="encaissé"
+            formater={(v) => formatMontant(v)}
+            parts={[
               { libelle: 'Encaissé', valeur: finances.encaisse, couleur: COULEURS.bon },
               { libelle: 'À venir', valeur: aVenir, couleur: COULEURS.neutre },
               { libelle: 'En retard', valeur: finances.retard, couleur: COULEURS.critique },
             ]}
-            formater={(v) => formatMontant(v)}
           />
           <p className="mt-4 border-t pt-3 text-xs text-muted-foreground">
             {finances.en_retard} famille(s) en retard sur {finances.eleves} élèves
@@ -230,43 +226,24 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
   )
 }
 
-interface Segment {
-  libelle: string
-  valeur: number
-  couleur: string
-}
-
-/**
- * Répartition d'un total en barre segmentée (100 %), avec légende chiffrée.
- * Remplace les camemberts : les parts se comparent sur une même ligne.
- */
-function Repartition({ segments, formater, vertical = false }: { segments: Segment[]; formater: (v: number) => string; vertical?: boolean }) {
-  const total = segments.reduce((t, s) => t + s.valeur, 0)
-  const part = (v: number) => (total ? Math.round((v / total) * 100) : 0)
-
+/** Une ligne par classe : effectif sur capacité, en barre de remplissage. Une classe pleine passe en orange. */
+function RemplissageClasses({ effectifs }: { effectifs: Donnees['effectifs'] }) {
   return (
-    <div className="space-y-3">
-      <div className="flex h-2.5 w-full gap-0.5 overflow-hidden rounded-full" role="img" aria-label={segments.map((s) => `${s.libelle} ${part(s.valeur)} %`).join(', ')}>
-        {segments
-          .filter((s) => s.valeur > 0)
-          .map((s) => (
-            <div key={s.libelle} className="h-full first:rounded-l-full last:rounded-r-full" style={{ width: `${(s.valeur / total) * 100}%`, background: s.couleur }} />
-          ))}
-      </div>
-      {vertical ? (
-        <ul className="space-y-2.5">
-          {segments.map((s) => (
-            <li key={s.libelle} className="flex items-center gap-2.5 text-sm">
-              <span aria-hidden className="size-2.5 rounded-[3px]" style={{ background: s.couleur }} />
-              <span className="text-muted-foreground">{s.libelle}</span>
-              <span className="ml-auto font-medium tabular-nums">{formater(s.valeur)}</span>
-              <span className="w-10 text-right text-xs text-muted-foreground tabular-nums">{part(s.valeur)} %</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <Legende entrees={segments.map((s) => ({ libelle: s.libelle, couleur: s.couleur, valeur: formater(s.valeur), detail: `${part(s.valeur)} %` }))} />
-      )}
-    </div>
+    <ul className="space-y-3">
+      {effectifs.map((e) => {
+        const taux = remplissage(e.effectif, e.capacite)
+        const pleine = taux >= 100
+        return (
+          <li key={e.classe.id} className="grid grid-cols-[3rem_1fr_auto] items-center gap-3 text-sm">
+            <span className="font-medium">{e.classe.nom}</span>
+            <Jauge pourcentage={taux} couleur={pleine ? COULEURS.alerte : COULEURS.serie1} libelle={`Remplissage de la ${e.classe.nom}`} />
+            <span className="text-xs text-muted-foreground tabular-nums">
+              <span className="font-medium text-foreground">{e.effectif}</span> / {e.capacite}
+              {pleine && <span className="ml-1.5 font-medium text-foreground">· complète</span>}
+            </span>
+          </li>
+        )
+      })}
+    </ul>
   )
 }
