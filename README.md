@@ -309,11 +309,16 @@ npm run lint && npm run build                # oxlint, vérification TypeScript 
   Variables minimales : `APP_KEY`, `APP_URL`, `FRONTEND_URL`, `DB_*` ; `.env.example` est commenté.
   Le port est lu dans `$PORT` et les migrations s'exécutent au démarrage
   (`RUN_MIGRATIONS=false` pour les désactiver).
+  En multi-établissement, le démarrage lance `ecole:migrer` et, si `ECOLE_DEMO_CODE` est défini,
+  crée l'école de démonstration au premier lancement (en arrière-plan).
+- **Démo gratuite** : `render.yaml` (Blueprint Render) décrit l'API ; MySQL chez un fournisseur
+  qui autorise `CREATE DATABASE` (Aiven, TiDB Cloud). Certificat SSL du fournisseur dans
+  `DB_SSL_CA_PEM`. Le service gratuit se met en veille après 15 min (premier appel ~1 min).
 - **Sans worker permanent**, utiliser `QUEUE_CONNECTION=sync` : la génération des PDF d'une classe
   (~10 s pour 25 élèves) s'exécute alors dans la requête. Les PDF sont stockés sur le disque local
   du conteneur ; un PDF individuel disparu est régénéré à la demande.
-- L'en-tête des documents (nom, adresse, ville, chef d'établissement) se configure avec les
-  variables `ECOLE_*`.
+- L'en-tête des documents (nom, adresse, ville, chef d'établissement) se modifie dans Paramètres ;
+  les variables `ECOLE_*` servent de valeurs par défaut en mode école unique.
 - **Avertissements de retard d'écolage** : la commande `php artisan scolaris:relancer-impayes`
   avertit chaque matin à 7 h les parents (une fois par tranche impayée) et envoie un récapitulatif
   à la direction et au secrétariat (cloche de l'application + e-mail, `MAIL_*`). En Docker, le

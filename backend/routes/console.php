@@ -29,7 +29,13 @@ Schedule::command('scolaris:relancer-impayes')->dailyAt('07:00');
 
 Artisan::command('ecole:creer {code : identifiant court, ex. lycee-andohalo} {nom : nom affiché de l’école}
     {--email= : e-mail du compte de la direction} {--mot-de-passe= : mot de passe de ce compte}
-    {--demo : remplir la base avec les données de démonstration}', function (GestionEcoles $gestion) {
+    {--demo : remplir la base avec les données de démonstration}
+    {--si-absente : ne rien faire si ce code existe déjà (premier démarrage d’un serveur)}', function (GestionEcoles $gestion) {
+    if ($this->option('si-absente') && Ecole::where('code', $this->argument('code'))->exists()) {
+        $this->info('École « '.$this->argument('code').' » déjà présente.');
+
+        return 0;
+    }
     try {
         $ecole = $gestion->creer($this->argument('code'), $this->argument('nom'), $this->option('email'), $this->option('mot-de-passe'), (bool) $this->option('demo'));
     } catch (InvalidArgumentException $e) {
