@@ -1,3 +1,4 @@
+import { CalendarRange } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -46,6 +47,7 @@ export function AnneeFormDialog({ open, onOpenChange, annee }: Props) {
 
   return (
     <FormDialog
+      icone={CalendarRange}
       open={open}
       onOpenChange={onOpenChange}
       title={annee ? `Modifier ${annee.libelle}` : 'Nouvelle année scolaire'}

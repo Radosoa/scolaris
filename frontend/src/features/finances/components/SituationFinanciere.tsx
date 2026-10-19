@@ -13,7 +13,7 @@ import { formatDate } from '@/lib/format'
 import { cn } from '@/lib/utils'
 import { ErreurChargement } from '@/pages/ErrorPages'
 import { telechargerRecu, useSituation } from '../api'
-import { formatEuros, progression } from '../format'
+import { formatMontant, progression } from '../format'
 import type { Paiement, StatutEcheance } from '../types'
 import { AnnulationDialog } from './AnnulationDialog'
 import { EncaissementDialog } from './EncaissementDialog'
@@ -52,7 +52,7 @@ export function SituationFinanciere({ eleveId, gestion }: { eleveId: number; ges
     {
       header: 'Montant',
       className: 'text-right',
-      cell: (p) => <span className={cn('tabular-nums', p.annule && 'text-muted-foreground line-through')}>{formatEuros(p.montant)}</span>,
+      cell: (p) => <span className={cn('tabular-nums', p.annule && 'text-muted-foreground line-through')}>{formatMontant(p.montant)}</span>,
     },
     {
       header: 'Statut',
@@ -84,10 +84,10 @@ export function SituationFinanciere({ eleveId, gestion }: { eleveId: number; ges
   return (
     <div className="space-y-4">
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Chiffre libelle="Frais de l’année" valeur={formatEuros(s.total)} />
-        <Chiffre libelle="Réglé" valeur={formatEuros(s.paye)} detail={`${part} %`} />
-        <Chiffre libelle="Reste à payer" valeur={formatEuros(s.reste)} />
-        <Chiffre libelle="En retard" valeur={formatEuros(s.retard)} alerte={s.retard > 0} />
+        <Chiffre libelle="Frais de l’année" valeur={formatMontant(s.total)} />
+        <Chiffre libelle="Réglé" valeur={formatMontant(s.paye)} detail={`${part} %`} />
+        <Chiffre libelle="Reste à payer" valeur={formatMontant(s.reste)} />
+        <Chiffre libelle="En retard" valeur={formatMontant(s.retard)} alerte={s.retard > 0} />
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-muted" role="progressbar" aria-valuenow={part} aria-valuemin={0} aria-valuemax={100} aria-label="Part des frais réglée">
         <div className="h-full rounded-full bg-emerald-600 transition-all" style={{ width: `${part}%` }} />
@@ -105,14 +105,14 @@ export function SituationFinanciere({ eleveId, gestion }: { eleveId: number; ges
                 {s.frais.map((f) => (
                   <TableRow key={f.id}>
                     <TableCell>{f.libelle}</TableCell>
-                    <TableCell className="text-right tabular-nums">{formatEuros(f.montant)}</TableCell>
+                    <TableCell className="text-right tabular-nums">{formatMontant(f.montant)}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
               <TableFooter>
                 <TableRow>
                   <TableCell>Total</TableCell>
-                  <TableCell className="text-right tabular-nums">{formatEuros(s.total)}</TableCell>
+                  <TableCell className="text-right tabular-nums">{formatMontant(s.total)}</TableCell>
                 </TableRow>
               </TableFooter>
             </Table>
@@ -144,7 +144,7 @@ export function SituationFinanciere({ eleveId, gestion }: { eleveId: number; ges
                         {t.libelle} <span className="text-xs text-muted-foreground">({t.pourcentage} %)</span>
                       </TableCell>
                       <TableCell>{formatDate(t.date_limite)}</TableCell>
-                      <TableCell className="text-right tabular-nums">{formatEuros(t.montant)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{formatMontant(t.montant)}</TableCell>
                       <TableCell className="text-right">
                         <Badge variant={STATUTS[t.statut].variante}>{STATUTS[t.statut].libelle}</Badge>
                       </TableCell>

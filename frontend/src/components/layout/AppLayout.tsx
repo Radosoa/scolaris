@@ -3,12 +3,18 @@ import { useState } from 'react'
 import { Outlet } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useParametres } from '@/features/etablissement/api'
 import { ChoixTheme } from './ChoixTheme'
+import { MenuUtilisateur } from './MenuUtilisateur'
+import { Notifications } from './Notifications'
 import { RechercheRapide } from './RechercheRapide'
 import { SidebarNav } from './SidebarNav'
 
 export function AppLayout() {
   const [menuMobileOuvert, setMenuMobileOuvert] = useState(false)
+  // La devise doit être connue avant d'afficher le moindre montant
+  const parametres = useParametres()
   // Date figée au montage (pas d'appel impur pendant le rendu)
   const [aujourdhui] = useState(() =>
     new Intl.DateTimeFormat('fr-FR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date()),
@@ -46,11 +52,20 @@ export function AppLayout() {
             <CalendarDays className="size-4" />
             <span className="first-letter:uppercase">{aujourdhui}</span>
           </p>
-          <ChoixTheme className="ml-auto md:ml-0" />
+          <div className="ml-auto flex items-center gap-1.5 md:ml-0">
+            <Notifications />
+            <ChoixTheme />
+            <MenuUtilisateur />
+          </div>
         </header>
 
         <main className="mx-auto w-full max-w-7xl p-4 sm:p-6 lg:p-8">
-          <Outlet />
+          {parametres.isPending ? (
+            <Skeleton className="h-96 w-full" />
+          ) : (
+            // Remonté à chaque changement de devise : tous les montants sont réaffichés
+            <Outlet key={parametres.data?.devise.code} />
+          )}
         </main>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { Layers } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -38,6 +39,7 @@ export function NiveauFormDialog({ open, onOpenChange, niveau, ordreSuivant }: P
 
   return (
     <FormDialog
+      icone={Layers}
       open={open}
       onOpenChange={onOpenChange}
       title={niveau ? `Modifier ${niveau.libelle}` : 'Nouveau niveau'}

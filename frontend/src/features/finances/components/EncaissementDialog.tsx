@@ -1,3 +1,4 @@
+import { Wallet } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -10,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { aujourdhuiIso } from '@/lib/format'
 import { handleFormError } from '@/lib/form-errors'
 import { telechargerRecu, useEncaisser } from '../api'
-import { formatEuros, lireMontant } from '../format'
+import { deviseActive, formatMontant, lireMontant, montantEnSaisie } from '../format'
 import { paiementSchema, type PaiementValues } from '../schemas'
 import { MODES, type ModePaiement, type Situation } from '../types'
 
@@ -19,8 +20,6 @@ interface Props {
   onOpenChange: (open: boolean) => void
   situation: Situation
 }
-
-const enSaisie = (montant: number) => montant.toFixed(2).replace('.', ',')
 
 /** Encaissement d'une tranche : montant libre (plafonné au reste), propositions retard / solde. */
 export function EncaissementDialog({ open, onOpenChange, situation }: Props) {
@@ -32,7 +31,7 @@ export function EncaissementDialog({ open, onOpenChange, situation }: Props) {
   useEffect(() => {
     if (open) {
       form.reset({
-        montant: enSaisie(situation.retard > 0 ? situation.retard : situation.reste),
+        montant: montantEnSaisie(situation.retard > 0 ? situation.retard : situation.reste),
         date: aujourdhuiIso(),
         mode: 'virement',
         reference: '',
@@ -57,29 +56,30 @@ export function EncaissementDialog({ open, onOpenChange, situation }: Props) {
     }
   })
 
-  const proposer = (montant: number) => form.setValue('montant', enSaisie(montant), { shouldValidate: true })
+  const proposer = (montant: number) => form.setValue('montant', montantEnSaisie(montant), { shouldValidate: true })
 
   return (
     <FormDialog
+      icone={Wallet}
       open={open}
       onOpenChange={onOpenChange}
       title="Encaisser un paiement"
-      description={`${situation.eleve.prenom} ${situation.eleve.nom} · reste à payer ${formatEuros(situation.reste)}`}
+      description={`${situation.eleve.prenom} ${situation.eleve.nom} · reste à payer ${formatMontant(situation.reste)}`}
       onSubmit={onSubmit}
       isSubmitting={isSubmitting}
       submitLabel="Encaisser"
     >
-      <Field label="Montant (€)" htmlFor="paiement-montant" error={errors.montant?.message}>
+      <Field label={`Montant (${deviseActive().symbole})`} htmlFor="paiement-montant" error={errors.montant?.message}>
         <Input id="paiement-montant" inputMode="decimal" className="text-right tabular-nums" aria-invalid={!!errors.montant} {...form.register('montant')} />
       </Field>
       <div className="flex flex-wrap gap-2">
         {situation.retard > 0 && (
           <Button type="button" size="sm" variant="outline" onClick={() => proposer(situation.retard)}>
-            Retard : {formatEuros(situation.retard)}
+            Retard : {formatMontant(situation.retard)}
           </Button>
         )}
         <Button type="button" size="sm" variant="outline" onClick={() => proposer(situation.reste)}>
-          Solde : {formatEuros(situation.reste)}
+          Solde : {formatMontant(situation.reste)}
         </Button>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">

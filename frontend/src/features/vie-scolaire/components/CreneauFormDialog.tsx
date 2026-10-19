@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
-import { TriangleAlert, Trash2 } from 'lucide-react'
+import { TriangleAlert, Trash2, Clock } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -87,6 +87,7 @@ export function CreneauFormDialog({ open, onOpenChange, creneau, depart, affecta
 
   return (
     <FormDialog
+      icone={Clock}
       open={open}
       onOpenChange={onOpenChange}
       title={creneau ? 'Modifier le créneau' : 'Nouveau créneau'}

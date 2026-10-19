@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Plus, Trash2 } from 'lucide-react'
+import { CalendarClock, CalendarRange, Plus, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { FormDialog } from '@/components/form/FormDialog'
@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { getErrorMessage } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { useEnregistrerEcheances } from '../api'
+import { echeancierMensuel } from '../echeancier'
 import { totalPourcentages } from '../format'
 import type { Echeance } from '../types'
 
@@ -43,6 +44,7 @@ export function EcheancierDialog({ open, onOpenChange, annee, echeances }: Props
 
   return (
     <FormDialog
+      icone={CalendarClock}
       open={open}
       onOpenChange={onOpenChange}
       title={`Échéancier ${annee.libelle}`}
@@ -95,15 +97,31 @@ export function EcheancierDialog({ open, onOpenChange, annee, echeances }: Props
             </Button>
           </div>
         ))}
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          onClick={() => setLignes((l) => [...l, { libelle: `Tranche ${l.length + 1}`, date_limite: annee.date_debut, pourcentage: String(Math.max(0, 100 - total)).replace('.', ',') }])}
-        >
-          <Plus />
-          Ajouter une tranche
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setLignes((l) => [...l, { libelle: `Tranche ${l.length + 1}`, date_limite: annee.date_debut, pourcentage: String(Math.max(0, 100 - total)).replace('.', ',') }])}
+          >
+            <Plus />
+            Ajouter une tranche
+          </Button>
+          {/* Écolage payé chaque mois (usage à Madagascar) : remplace les tranches actuelles */}
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setLignes(
+                echeancierMensuel(annee.date_debut, annee.date_fin).map((t) => ({ ...t, pourcentage: String(t.pourcentage).replace('.', ',') })),
+              )
+            }
+          >
+            <CalendarRange />
+            Échéancier mensuel
+          </Button>
+        </div>
       </div>
       <p className={cn('text-sm', total === 100 || lignes.length === 0 ? 'text-muted-foreground' : 'text-destructive')}>
         Total : {total.toLocaleString('fr-FR')} %{total !== 100 && lignes.length > 0 && ' — les tranches doivent totaliser 100 %'}

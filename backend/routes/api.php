@@ -5,11 +5,14 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Bulletins\AppreciationController;
 use App\Http\Controllers\Api\Bulletins\BulletinClasseController;
 use App\Http\Controllers\Api\Bulletins\BulletinController;
+use App\Http\Controllers\Api\Etablissement\EcoleController;
+use App\Http\Controllers\Api\Etablissement\ParametreController;
 use App\Http\Controllers\Api\Finances\FraisController;
 use App\Http\Controllers\Api\Finances\PaiementController;
 use App\Http\Controllers\Api\Finances\SituationController;
 use App\Http\Controllers\Api\Notes\EvaluationController;
 use App\Http\Controllers\Api\Notes\ReleveNotesController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Personnes\AffectationController;
 use App\Http\Controllers\Api\Personnes\EleveController;
 use App\Http\Controllers\Api\Personnes\EnseignantController;
@@ -29,6 +32,9 @@ use App\Http\Controllers\Api\VieScolaire\EmploiDuTempsController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/login', [AuthController::class, 'login'])->middleware('throttle:login');
+
+// Identité de l'école désignée par X-Ecole (écran de connexion, menu)
+Route::get('/ecole', [EcoleController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
@@ -112,6 +118,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Communication -------------------------------------------------------
     Route::apiResource('annonces', AnnonceController::class);
+
+    // --- Établissement -------------------------------------------------------
+    Route::get('/parametres', [ParametreController::class, 'show']);
+    Route::put('/parametres', [ParametreController::class, 'update']);
+    Route::put('/ecole', [EcoleController::class, 'update']);
+
+    // --- Notifications -------------------------------------------------------
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/tout-lire', [NotificationController::class, 'toutLire']);
+    Route::post('/notifications/{id}/lire', [NotificationController::class, 'lire']);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

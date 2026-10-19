@@ -1,3 +1,4 @@
+import { ClipboardList } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
@@ -61,6 +62,7 @@ export function AffectationFormDialog({ open, onOpenChange, affectation, classeP
 
   return (
     <FormDialog
+      icone={ClipboardList}
       open={open}
       onOpenChange={onOpenChange}
       title={affectation ? 'Modifier l’affectation' : 'Nouvelle affectation'}

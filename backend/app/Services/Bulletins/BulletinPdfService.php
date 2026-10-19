@@ -9,6 +9,7 @@ use App\Models\Bulletin;
 use App\Models\BulletinLigne;
 use App\Models\Classe;
 use App\Models\Periode;
+use App\Services\ParametresService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -23,6 +24,8 @@ use Illuminate\Support\Str;
  */
 class BulletinPdfService
 {
+    public function __construct(private readonly ParametresService $parametres) {}
+
     /** Relations nécessaires au gabarit. */
     private const RELATIONS = [
         'lignes.matiere',
@@ -118,7 +121,7 @@ class BulletinPdfService
         $bulletins->each->loadMissing(self::RELATIONS);
 
         return Pdf::loadView('pdf.bulletins', [
-            'ecole' => config('ecole'),
+            'ecole' => $this->parametres->identite(),
             'bulletins' => $bulletins->map(fn (Bulletin $b) => $this->donnees($b)),
         ])->setPaper('a4')->output();
     }
@@ -176,7 +179,7 @@ class BulletinPdfService
                 'retards' => $bulletin->nb_retards,
             ],
             'appreciation_generale' => $bulletin->appreciation_generale,
-            'fait_le' => sprintf('Fait à %s, le %s', config('ecole.ville'), ($bulletin->valide_le ?? now())->format('d/m/Y')),
+            'fait_le' => sprintf('Fait à %s, le %s', $this->parametres->identite()['ville'], ($bulletin->valide_le ?? now())->format('d/m/Y')),
         ];
     }
 

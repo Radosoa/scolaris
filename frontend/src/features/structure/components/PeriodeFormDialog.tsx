@@ -1,3 +1,4 @@
+import { CalendarDays } from 'lucide-react'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
@@ -49,6 +50,7 @@ export function PeriodeFormDialog({ open, onOpenChange, annee, periode, ordreSui
 
   return (
     <FormDialog
+      icone={CalendarDays}
       open={open}
       onOpenChange={onOpenChange}
       title={periode ? `Modifier ${periode.libelle}` : 'Nouvelle période'}

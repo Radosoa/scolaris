@@ -7,13 +7,17 @@ use App\Exceptions\RegleMetierException;
 use App\Models\Inscription;
 use App\Models\Paiement;
 use App\Models\User;
+use App\Services\ParametresService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
 /** Encaissement (par tranches libres) et annulation des paiements. */
 class PaiementService
 {
-    public function __construct(private readonly FinancesService $finances) {}
+    public function __construct(
+        private readonly FinancesService $finances,
+        private readonly ParametresService $parametres,
+    ) {}
 
     /**
      * Enregistre un versement. Il ne peut pas dépasser le reste à payer ; le verrou sur
@@ -38,7 +42,7 @@ class PaiementService
             }
             if ($montant > $reste) {
                 throw ValidationException::withMessages([
-                    'montant' => 'Le montant dépasse le reste à payer ('.number_format($reste / 100, 2, ',', ' ').' €).',
+                    'montant' => 'Le montant dépasse le reste à payer ('.$this->parametres->devise()->formater($reste).').',
                 ]);
             }
 

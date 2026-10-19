@@ -67,6 +67,11 @@ class StructureSeeder extends Seeder
             }
         }
 
+        // Niveaux du lycée : disponibles pour créer des classes, sans classe de démo
+        foreach (['Seconde', 'Première', 'Terminale'] as $i => $libelle) {
+            Niveau::updateOrCreate(['ordre' => $i + 5], ['libelle' => $libelle]);
+        }
+
         foreach (self::MATIERES as $code => $ligne) {
             $nom = array_shift($ligne);
             $coefficients = $ligne;

@@ -125,7 +125,7 @@ export function InscriptionDialog({ open, onOpenChange, eleveId, nomEleve, inscr
         )}
 
         <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={enregistrer.isPending}>
+          <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={enregistrer.isPending}>
             Annuler
           </Button>
           <Button onClick={valider} disabled={enregistrer.isPending || aucuneAnnee}>

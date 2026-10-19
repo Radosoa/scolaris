@@ -2,6 +2,8 @@
 
 namespace App\Services\Finances;
 
+use App\Support\Devise;
+
 /**
  * Montant écrit en toutes lettres pour les reçus, selon l'orthographe traditionnelle :
  * traits d'union sous cent, « et » devant un et onze (vingt et un, soixante et onze),
@@ -20,22 +22,35 @@ final class MontantEnLettres
     /** Ex. 1250.5 → « mille deux cent cinquante euros et cinquante centimes ». */
     public static function euros(float|int|string $montant): string
     {
+        return self::montant($montant, Devise::depuisCode('EUR'));
+    }
+
+    /**
+     * Montant dans la devise de l'établissement. Une devise sans décimales (ariary, franc CFA)
+     * est arrondie à l'unité : 1250000 → « un million deux cent cinquante mille ariary ».
+     */
+    public static function montant(float|int|string $montant, Devise $devise): string
+    {
         $centimesTotal = (int) round((float) $montant * 100);
-        $euros = intdiv($centimesTotal, 100);
+        if ($devise->sousUnite === null) {
+            $centimesTotal = (int) round($centimesTotal / 100) * 100;
+        }
+        $unites = intdiv($centimesTotal, 100);
         $centimes = $centimesTotal % 100;
 
         $parties = [];
-        if ($euros > 0 || $centimes === 0) {
-            $unite = match (true) {
-                $euros <= 1 => 'euro',
-                // « un million d'euros », mais « un million deux cents euros »
-                $euros % 1_000_000 === 0 => 'd\'euros',
-                default => 'euros',
+        if ($unites > 0 || $centimes === 0) {
+            [$singulier, $pluriel] = $devise->unite;
+            $parties[] = self::nombre($unites).' '.match (true) {
+                $unites <= 1 => $singulier,
+                // « un million d'euros », « deux millions de dollars », mais « un million deux cents euros »
+                $unites % 1_000_000 === 0 => (preg_match('/^[aeiouy]/', $pluriel) ? 'd\'' : 'de ').$pluriel,
+                default => $pluriel,
             };
-            $parties[] = self::nombre($euros).($unite === 'd\'euros' ? ' d\'euros' : ' '.$unite);
         }
         if ($centimes > 0) {
-            $parties[] = self::nombre($centimes).' centime'.($centimes > 1 ? 's' : '');
+            [$singulier, $pluriel] = $devise->sousUnite;
+            $parties[] = self::nombre($centimes).' '.($centimes > 1 ? $pluriel : $singulier);
         }
 
         return implode(' et ', $parties);

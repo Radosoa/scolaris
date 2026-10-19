@@ -63,6 +63,39 @@ class TableauDeBordService
                 ...$this->finances->totauxAnnee($annee),
                 'par_mois' => $this->encaissementsParMois($annee),
             ],
+            'bulletins' => $this->bulletinsATraiter($annee),
+        ];
+    }
+
+    /**
+     * Avancement des bulletins de la dernière période clôturée : classes sans bulletin
+     * (à calculer) et classes en brouillon (à valider).
+     *
+     * @return array{periode: array{id: int, libelle: string}|null, a_calculer: list<string>, a_valider: list<string>, valides: int}
+     */
+    private function bulletinsATraiter(AnneeScolaire $annee): array
+    {
+        $periode = Periode::where('annee_scolaire_id', $annee->id)->where('cloturee', true)->orderByDesc('date_debut')->first();
+        if (! $periode) {
+            return ['periode' => null, 'a_calculer' => [], 'a_valider' => [], 'valides' => 0];
+        }
+
+        $etats = DB::table('classes')
+            ->join('niveaux', 'niveaux.id', '=', 'classes.niveau_id')
+            ->leftJoin('inscriptions', 'inscriptions.classe_id', '=', 'classes.id')
+            ->leftJoin('bulletins', fn ($j) => $j->on('bulletins.inscription_id', '=', 'inscriptions.id')->where('bulletins.periode_id', $periode->id))
+            ->where('classes.annee_scolaire_id', $annee->id)
+            ->groupBy('classes.id', 'classes.nom', 'niveaux.ordre')
+            ->orderBy('niveaux.ordre')
+            ->orderBy('classes.nom')
+            ->selectRaw('classes.nom, COUNT(bulletins.id) AS nombre, COALESCE(SUM(bulletins.valide), 0) AS valides')
+            ->get();
+
+        return [
+            'periode' => ['id' => $periode->id, 'libelle' => $periode->libelle],
+            'a_calculer' => $etats->where('nombre', 0)->pluck('nom')->values()->all(),
+            'a_valider' => $etats->filter(fn ($e) => $e->nombre > 0 && $e->valides < $e->nombre)->pluck('nom')->values()->all(),
+            'valides' => $etats->filter(fn ($e) => $e->nombre > 0 && $e->valides == $e->nombre)->count(),
         ];
     }
 
