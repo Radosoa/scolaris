@@ -5,6 +5,8 @@ services:
     name: scolaris-api
     runtime: docker
     plan: free
+    # Même région que la base MySQL (Aiven, Europe) : sinon chaque requête traverse l'Atlantique
+    region: frankfurt
     rootDir: backend
     dockerfilePath: ./Dockerfile
     healthCheckPath: /up
