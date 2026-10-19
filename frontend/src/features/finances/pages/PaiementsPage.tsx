@@ -24,7 +24,7 @@ import { telechargerRecu, useImpayes, useJournal } from '../api'
 import { AnnulationDialog } from '../components/AnnulationDialog'
 import { FraisConfig } from '../components/FraisConfig'
 import { SituationFinanciere } from '../components/SituationFinanciere'
-import { formatEuros } from '../format'
+import { formatMontant } from '../format'
 import { MODES, type Paiement, type Solde } from '../types'
 
 const TOUS = 'tous'
@@ -86,13 +86,13 @@ function Impayes() {
       ),
     },
     { header: 'Classe', className: 'hidden sm:table-cell', cell: (s) => s.classe.nom },
-    { header: 'Frais', className: 'hidden text-right md:table-cell', cell: (s) => <span className="tabular-nums">{formatEuros(s.total)}</span> },
-    { header: 'Réglé', className: 'hidden text-right md:table-cell', cell: (s) => <span className="tabular-nums">{formatEuros(s.paye)}</span> },
-    { header: 'Reste', className: 'text-right', cell: (s) => <span className="tabular-nums">{formatEuros(s.reste)}</span> },
+    { header: 'Frais', className: 'hidden text-right md:table-cell', cell: (s) => <span className="tabular-nums">{formatMontant(s.total)}</span> },
+    { header: 'Réglé', className: 'hidden text-right md:table-cell', cell: (s) => <span className="tabular-nums">{formatMontant(s.paye)}</span> },
+    { header: 'Reste', className: 'text-right', cell: (s) => <span className="tabular-nums">{formatMontant(s.reste)}</span> },
     {
       header: 'En retard',
       className: 'text-right',
-      cell: (s) => <span className={cn('tabular-nums', s.retard > 0 ? 'font-medium text-destructive' : 'text-muted-foreground')}>{formatEuros(s.retard)}</span>,
+      cell: (s) => <span className={cn('tabular-nums', s.retard > 0 ? 'font-medium text-destructive' : 'text-muted-foreground')}>{formatMontant(s.retard)}</span>,
     },
     {
       header: 'Actions',
@@ -111,10 +111,10 @@ function Impayes() {
     <>
       {totaux ? (
         <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Chiffre libelle="Attendu sur l’année" valeur={formatEuros(totaux.attendu)} detail={`${totaux.eleves} élèves`} />
-          <Chiffre libelle="Encaissé" valeur={formatEuros(totaux.encaisse)} detail={totaux.attendu ? `${Math.round((totaux.encaisse / totaux.attendu) * 100)} %` : undefined} />
-          <Chiffre libelle="Reste à percevoir" valeur={formatEuros(totaux.reste)} />
-          <Chiffre libelle="En retard" valeur={formatEuros(totaux.retard)} detail={`${totaux.en_retard} famille(s)`} alerte={totaux.retard > 0} />
+          <Chiffre libelle="Attendu sur l’année" valeur={formatMontant(totaux.attendu)} detail={`${totaux.eleves} élèves`} />
+          <Chiffre libelle="Encaissé" valeur={formatMontant(totaux.encaisse)} detail={totaux.attendu ? `${Math.round((totaux.encaisse / totaux.attendu) * 100)} %` : undefined} />
+          <Chiffre libelle="Reste à percevoir" valeur={formatMontant(totaux.reste)} />
+          <Chiffre libelle="En retard" valeur={formatMontant(totaux.retard)} detail={`${totaux.en_retard} famille(s)`} alerte={totaux.retard > 0} />
         </div>
       ) : (
         <Skeleton className="mb-4 h-24 w-full" />
@@ -183,10 +183,10 @@ function Journal() {
             <Badge variant="destructive" className="mr-2">
               Annulé
             </Badge>
-            <span className="text-muted-foreground tabular-nums line-through">{formatEuros(p.montant)}</span>
+            <span className="text-muted-foreground tabular-nums line-through">{formatMontant(p.montant)}</span>
           </span>
         ) : (
-          <span className="font-medium tabular-nums">{formatEuros(p.montant)}</span>
+          <span className="font-medium tabular-nums">{formatMontant(p.montant)}</span>
         ),
     },
     {
@@ -228,7 +228,7 @@ function Journal() {
         </Select>
         {requete.data && (
           <Badge variant="secondary" className="h-8 px-3 lg:ml-auto">
-            Encaissé : {formatEuros(requete.data.meta.total_encaisse)}
+            Encaissé : {formatMontant(requete.data.meta.total_encaisse)}
           </Badge>
         )}
       </div>

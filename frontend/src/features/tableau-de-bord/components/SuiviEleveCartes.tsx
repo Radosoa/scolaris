@@ -2,7 +2,7 @@ import { CalendarX2, FileText, Wallet } from 'lucide-react'
 import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { formatRang } from '@/features/bulletins/format'
-import { formatEuros } from '@/features/finances/format'
+import { formatMontant } from '@/features/finances/format'
 import { formatDate, formatNombre } from '@/lib/format'
 import type { SuiviEleve } from '../types'
 import { Indicateur, Panneau } from './Elements'
@@ -32,8 +32,8 @@ export function SuiviEleveCartes({ suivi }: { suivi: SuiviEleve }) {
           <Indicateur
             icone={Wallet}
             libelle="Frais de scolarité"
-            valeur={suivi.finances.retard > 0 ? formatEuros(suivi.finances.retard) : formatEuros(suivi.finances.reste)}
-            detail={suivi.finances.retard > 0 ? 'en retard de paiement' : `restent à payer sur ${formatEuros(suivi.finances.total)}`}
+            valeur={suivi.finances.retard > 0 ? formatMontant(suivi.finances.retard) : formatMontant(suivi.finances.reste)}
+            detail={suivi.finances.retard > 0 ? 'en retard de paiement' : `restent à payer sur ${formatMontant(suivi.finances.total)}`}
             alerte={suivi.finances.retard > 0}
             lien={`/paiements/eleves/${suivi.id}`}
           />

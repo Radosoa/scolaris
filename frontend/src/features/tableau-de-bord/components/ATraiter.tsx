@@ -1,6 +1,6 @@
 import { CalendarX2, ChevronRight, CircleCheck, FileCheck2, FileClock, Wallet, type LucideIcon } from 'lucide-react'
 import { Link } from 'react-router'
-import { formatEuros } from '@/features/finances/format'
+import { formatMontant } from '@/features/finances/format'
 import { cn } from '@/lib/utils'
 import type { TableauDirection } from '../types'
 import { Panneau } from './Elements'
@@ -23,7 +23,7 @@ export function ATraiter({ donnees }: { donnees: TableauDirection }) {
     finances.en_retard > 0 && {
       icone: Wallet,
       titre: 'Familles en retard de paiement',
-      detail: `${formatEuros(finances.retard)} exigibles non réglés`,
+      detail: `${formatMontant(finances.retard)} exigibles non réglés`,
       compte: finances.en_retard,
       lien: '/paiements',
       urgence: 'haute' as const,

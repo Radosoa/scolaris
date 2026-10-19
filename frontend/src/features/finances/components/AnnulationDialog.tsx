@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input'
 import { getErrorMessage } from '@/lib/api'
 import { formatDate } from '@/lib/format'
 import { useAnnulerPaiement } from '../api'
-import { formatEuros } from '../format'
+import { formatMontant } from '../format'
 import type { Paiement } from '../types'
 
 interface Props {
@@ -36,7 +36,7 @@ export function AnnulationDialog({ open, onOpenChange, paiement }: Props) {
       open={open}
       onOpenChange={onOpenChange}
       title={`Annuler le paiement ${paiement?.numero_recu ?? ''}`}
-      description={paiement ? `${formatEuros(paiement.montant)} du ${formatDate(paiement.date)}. Le reçu restera consultable avec la mention « Annulé ».` : undefined}
+      description={paiement ? `${formatMontant(paiement.montant)} du ${formatDate(paiement.date)}. Le reçu restera consultable avec la mention « Annulé ».` : undefined}
       submitLabel="Annuler le paiement"
       isSubmitting={annuler.isPending}
       onSubmit={async (e) => {

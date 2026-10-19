@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableFooter, TableRow } from '@/components
 import { formatDate } from '@/lib/format'
 import { ErreurChargement } from '@/pages/ErrorPages'
 import { useGrilleFrais, useSupprimerFrais } from '../api'
-import { formatEuros } from '../format'
+import { formatMontant } from '../format'
 import type { LigneFrais } from '../types'
 import { EcheancierDialog } from './EcheancierDialog'
 import { FraisDialog } from './FraisDialog'
@@ -63,7 +63,7 @@ export function FraisConfig({ modifiable }: { modifiable: boolean }) {
           <Card key={niveau.id}>
             <CardHeader>
               <CardTitle>Niveau {niveau.libelle}</CardTitle>
-              <CardDescription>{formatEuros(total)} par élève et par an</CardDescription>
+              <CardDescription>{formatMontant(total)} par élève et par an</CardDescription>
               {modifiable && (
                 <CardAction>
                   <Button size="sm" variant="ghost" onClick={() => setEdition({ open: true, frais: null, niveau })}>
@@ -82,7 +82,7 @@ export function FraisConfig({ modifiable }: { modifiable: boolean }) {
                     {frais.map((f) => (
                       <TableRow key={f.id}>
                         <TableCell>{f.libelle}</TableCell>
-                        <TableCell className="text-right tabular-nums">{formatEuros(f.montant)}</TableCell>
+                        <TableCell className="text-right tabular-nums">{formatMontant(f.montant)}</TableCell>
                         {modifiable && (
                           <TableCell className="w-12 text-right">
                             <RowActions
@@ -100,7 +100,7 @@ export function FraisConfig({ modifiable }: { modifiable: boolean }) {
                   <TableFooter>
                     <TableRow>
                       <TableCell>Total</TableCell>
-                      <TableCell className="text-right tabular-nums">{formatEuros(total)}</TableCell>
+                      <TableCell className="text-right tabular-nums">{formatMontant(total)}</TableCell>
                       {modifiable && <TableCell />}
                     </TableRow>
                   </TableFooter>
@@ -125,7 +125,7 @@ export function FraisConfig({ modifiable }: { modifiable: boolean }) {
             open={!!aSupprimer}
             onOpenChange={(open) => !open && setASupprimer(null)}
             title={`Supprimer « ${aSupprimer?.libelle} » ?`}
-            description={`Le total dû par les familles de ce niveau baissera de ${formatEuros(aSupprimer?.montant)}.`}
+            description={`Le total dû par les familles de ce niveau baissera de ${formatMontant(aSupprimer?.montant)}.`}
             confirmLabel="Supprimer"
             destructive
             onConfirm={async () => {

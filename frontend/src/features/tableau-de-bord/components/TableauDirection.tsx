@@ -1,6 +1,6 @@
 import { CalendarX2, GraduationCap, TrendingUp, Wallet } from 'lucide-react'
 import { Bar, BarChart, CartesianGrid, LabelList, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { formatEuros } from '@/features/finances/format'
+import { formatMontant, formatMontantCompact } from '@/features/finances/format'
 import { formatNombre } from '@/lib/format'
 import { formatPourcentage, libelleMois, libelleSemaine, remplissage } from '../format'
 import { libelleVariation, tonVariation, variation } from '../tendances'
@@ -11,8 +11,6 @@ import { AXE, COULEURS } from './graphiques'
 import { Infobulle, Jauge, Legende, Sparkline } from './Visuels'
 
 const GRILLE = { vertical: false, stroke: COULEURS.grille } as const
-/** « 117 k€ » avec espace insécable (pas de retour à la ligne dans les étiquettes) */
-const kiloEuros = (v: unknown) => `${Math.round(Number(v) / 1000)} k€`
 const RAYON_HAUT: [number, number, number, number] = [4, 4, 0, 0]
 
 /** Direction : indicateurs clés, actions en attente, effectifs, résultats, absentéisme, recouvrement. */
@@ -76,7 +74,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
           <Sparkline valeurs={semaines} couleur={COULEURS.serie1} libelle="Heures d’absence par semaine depuis la rentrée" />
         </Indicateur>
 
-        <Indicateur icone={Wallet} libelle="Frais encaissés" valeur={formatEuros(finances.encaisse)} detail={`sur ${formatEuros(finances.attendu)} attendus`} lien="/paiements">
+        <Indicateur icone={Wallet} libelle="Frais encaissés" valeur={formatMontant(finances.encaisse)} detail={`sur ${formatMontant(finances.attendu)} attendus`} lien="/paiements">
           <div className="space-y-1.5">
             <Jauge pourcentage={partEncaissee} couleur={COULEURS.bon} libelle="Part des frais encaissée" />
             <p className="text-xs text-muted-foreground">{partEncaissee} % de l’année encaissés</p>
@@ -191,7 +189,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
         <Panneau
           className="lg:col-span-2"
           titre="Encaissements par mois"
-          description={`${formatEuros(finances.encaisse)} encaissés depuis la rentrée`}
+          description={`${formatMontant(finances.encaisse)} encaissés depuis la rentrée`}
           action={<LienPanneau to="/paiements?onglet=journal">Journal</LienPanneau>}
         >
           <div className="h-56">
@@ -199,10 +197,10 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
               <BarChart data={finances.par_mois.map((m) => ({ mois: libelleMois(m.mois), Encaissé: m.montant }))} margin={{ top: 20, right: 4, left: 0, bottom: 0 }}>
                 <CartesianGrid {...GRILLE} />
                 <XAxis dataKey="mois" tick={AXE} tickLine={false} axisLine={{ stroke: COULEURS.grille }} />
-                <YAxis tick={AXE} tickLine={false} axisLine={false} width={48} tickFormatter={kiloEuros} />
-                <Tooltip cursor={{ fill: 'var(--muted)', opacity: 0.5 }} content={<Infobulle formater={(v) => formatEuros(v)} />} />
+                <YAxis tick={AXE} tickLine={false} axisLine={false} width={48} tickFormatter={(v) => formatMontantCompact(v)} />
+                <Tooltip cursor={{ fill: 'var(--muted)', opacity: 0.5 }} content={<Infobulle formater={(v) => formatMontant(v)} />} />
                 <Bar dataKey="Encaissé" fill={COULEURS.serie1} maxBarSize={24} radius={RAYON_HAUT} isAnimationActive={false}>
-                  <LabelList dataKey="Encaissé" position="top" formatter={kiloEuros} style={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
+                  <LabelList dataKey="Encaissé" position="top" formatter={(v) => formatMontantCompact(v)} style={{ fontSize: 11, fill: 'var(--muted-foreground)' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -221,7 +219,7 @@ export function TableauDirection({ donnees }: { donnees: Donnees }) {
               { libelle: 'À venir', valeur: aVenir, couleur: COULEURS.neutre },
               { libelle: 'En retard', valeur: finances.retard, couleur: COULEURS.critique },
             ]}
-            formater={(v) => formatEuros(v)}
+            formater={(v) => formatMontant(v)}
           />
           <p className="mt-4 border-t pt-3 text-xs text-muted-foreground">
             {finances.en_retard} famille(s) en retard sur {finances.eleves} élèves

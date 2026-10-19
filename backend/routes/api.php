@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Bulletins\AppreciationController;
 use App\Http\Controllers\Api\Bulletins\BulletinClasseController;
 use App\Http\Controllers\Api\Bulletins\BulletinController;
+use App\Http\Controllers\Api\Etablissement\ParametreController;
 use App\Http\Controllers\Api\Finances\FraisController;
 use App\Http\Controllers\Api\Finances\PaiementController;
 use App\Http\Controllers\Api\Finances\SituationController;
@@ -112,6 +113,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // --- Communication -------------------------------------------------------
     Route::apiResource('annonces', AnnonceController::class);
+
+    // --- Établissement -------------------------------------------------------
+    Route::get('/parametres', [ParametreController::class, 'show']);
+    Route::put('/parametres', [ParametreController::class, 'update']);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)

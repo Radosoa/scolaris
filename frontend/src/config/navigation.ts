@@ -8,6 +8,7 @@ import {
   GraduationCap,
   LayoutDashboard,
   Megaphone,
+  Settings,
   School,
   UserCheck,
   UserRoundPlus,
@@ -81,6 +82,7 @@ export const NAVIGATION: NavGroup[] = [
     items: [
       { label: 'Paiements', path: '/paiements', icon: Wallet, roles: ['admin', 'secretariat', 'parent'] },
       { label: 'Annonces', path: '/annonces', icon: Megaphone, roles: TOUS },
+      { label: 'Paramètres', path: '/parametres', icon: Settings, roles: ['admin'] },
     ],
   },
 ]

@@ -32,6 +32,7 @@ const ECRANS: Record<string, Chargeur> = {
   '/absences': () => import('@/features/vie-scolaire/pages/AbsencesPage').then((m) => ({ Component: m.AbsencesPage })),
   '/paiements': () => import('@/features/finances/pages/PaiementsPage').then((m) => ({ Component: m.PaiementsPage })),
   '/annonces': () => import('@/features/annonces/pages/AnnoncesPage').then((m) => ({ Component: m.AnnoncesPage })),
+  '/parametres': () => import('@/features/etablissement/pages/ParametresPage').then((m) => ({ Component: m.ParametresPage })),
   '/emploi-du-temps': () =>
     import('@/features/vie-scolaire/pages/EmploiDuTempsPage').then((m) => ({ Component: m.EmploiDuTempsPage })),
 }

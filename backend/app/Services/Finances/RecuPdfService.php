@@ -3,13 +3,17 @@
 namespace App\Services\Finances;
 
 use App\Models\Paiement;
+use App\Services\ParametresService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Str;
 
 /** Reçu de paiement PDF (gabarit resources/views/pdf/recu.blade.php). */
 class RecuPdfService
 {
-    public function __construct(private readonly FinancesService $finances) {}
+    public function __construct(
+        private readonly FinancesService $finances,
+        private readonly ParametresService $parametres,
+    ) {}
 
     public function contenu(Paiement $paiement): string
     {
@@ -41,7 +45,8 @@ class RecuPdfService
                 ->sum('montant')
         );
 
-        $euros = fn (int $centimes) => number_format($centimes / 100, 2, ',', ' ').' €';
+        $devise = $this->parametres->devise();
+        $euros = fn (int $centimes) => $devise->formater($centimes);
 
         return [
             'numero' => $paiement->numero_recu,
@@ -55,7 +60,7 @@ class RecuPdfService
             'classe' => $inscription->classe->nom,
             'annee' => $inscription->anneeScolaire->libelle,
             'montant' => $euros(FinancesService::centimes($paiement->montant)),
-            'montant_lettres' => ucfirst(MontantEnLettres::euros($paiement->montant)),
+            'montant_lettres' => ucfirst(MontantEnLettres::montant($paiement->montant, $devise)),
             'mode' => $paiement->mode->libelle(),
             'reference' => $paiement->reference,
             'total' => $euros($total),

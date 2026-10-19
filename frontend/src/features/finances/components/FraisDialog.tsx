@@ -7,7 +7,7 @@ import { FormDialog } from '@/components/form/FormDialog'
 import { Input } from '@/components/ui/input'
 import { handleFormError } from '@/lib/form-errors'
 import { useEnregistrerFrais } from '../api'
-import { lireMontant } from '../format'
+import { deviseActive, lireMontant, montantEnSaisie } from '../format'
 import { fraisSchema, type FraisValues } from '../schemas'
 import type { LigneFrais } from '../types'
 
@@ -26,7 +26,7 @@ export function FraisDialog({ open, onOpenChange, frais, niveau, anneeId }: Prop
   const { errors, isSubmitting } = form.formState
 
   useEffect(() => {
-    if (open) form.reset({ libelle: frais?.libelle ?? '', montant: frais ? frais.montant.toFixed(2).replace('.', ',') : '' })
+    if (open) form.reset({ libelle: frais?.libelle ?? '', montant: frais ? montantEnSaisie(frais.montant) : '' })
   }, [open, frais, form])
 
   const onSubmit = form.handleSubmit(async (valeurs) => {
@@ -57,7 +57,7 @@ export function FraisDialog({ open, onOpenChange, frais, niveau, anneeId }: Prop
         <Field label="Libellé" htmlFor="frais-libelle" error={errors.libelle?.message}>
           <Input id="frais-libelle" placeholder="Ex. Scolarité, Cantine" aria-invalid={!!errors.libelle} {...form.register('libelle')} />
         </Field>
-        <Field label="Montant (€)" htmlFor="frais-montant" error={errors.montant?.message}>
+        <Field label={`Montant (${deviseActive().symbole})`} htmlFor="frais-montant" error={errors.montant?.message}>
           <Input id="frais-montant" inputMode="decimal" className="text-right" aria-invalid={!!errors.montant} {...form.register('montant')} />
         </Field>
       </div>
