@@ -59,7 +59,7 @@ export function FormDialog({
           <div className="space-y-4">{children}</div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+            <Button type="button" variant="secondary" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
               Annuler
             </Button>
             <Button type="submit" disabled={isSubmitting}>

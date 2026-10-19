@@ -160,7 +160,7 @@ export function ParentsDialog({ open, onOpenChange, eleve }: Props) {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={save.isPending}>
+            <Button variant="secondary" onClick={() => onOpenChange(false)} disabled={save.isPending}>
               Annuler
             </Button>
             <Button onClick={enregistrer} disabled={save.isPending}>
