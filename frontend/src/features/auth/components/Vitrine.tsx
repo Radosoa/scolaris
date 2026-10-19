@@ -74,8 +74,8 @@ export function Vitrine() {
             <p className="text-xs text-white/70">Reçu R2026-00042</p>
             <Sparkles className="size-3.5 text-amber-200" />
           </div>
-          <p className="mt-1 text-xl font-semibold tabular-nums">480,00 €</p>
-          <p className="text-xs text-white/70">Quatre cent quatre-vingts euros</p>
+          <p className="mt-1 text-xl font-semibold tabular-nums">150 000 Ar</p>
+          <p className="text-xs text-white/70">Cent cinquante mille ariary</p>
         </CarteFlottante>
       </div>
 
