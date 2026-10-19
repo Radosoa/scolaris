@@ -270,6 +270,10 @@ npm run lint && npm run build                # oxlint, vérification TypeScript 
   du conteneur ; un PDF individuel disparu est régénéré à la demande.
 - L'en-tête des documents (nom, adresse, ville, chef d'établissement) se configure avec les
   variables `ECOLE_*`.
+- **Avertissements de retard d'écolage** : la commande `php artisan scolaris:relancer-impayes`
+  avertit chaque matin à 7 h les parents (une fois par tranche impayée) et envoie un récapitulatif
+  à la direction et au secrétariat (cloche de l'application + e-mail, `MAIL_*`). En Docker, le
+  service `scheduler` s'en charge ; ailleurs, planifier `php artisan schedule:run` chaque minute (cron).
 
 ## Choix techniques
 

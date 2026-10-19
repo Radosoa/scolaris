@@ -41,5 +41,17 @@ services:
       mysql:
         condition: service_healthy
 
+  # Tâches planifiées (avertissements de retard d'écolage chaque matin à 7 h)
+  scheduler:
+    build: ./docker/php
+    command: php artisan schedule:work
+    working_dir: /var/www/backend
+    volumes:
+      - ./backend:/var/www/backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   mysql-data:

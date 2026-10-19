@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\Finances\PaiementController;
 use App\Http\Controllers\Api\Finances\SituationController;
 use App\Http\Controllers\Api\Notes\EvaluationController;
 use App\Http\Controllers\Api\Notes\ReleveNotesController;
+use App\Http\Controllers\Api\NotificationController;
 use App\Http\Controllers\Api\Personnes\AffectationController;
 use App\Http\Controllers\Api\Personnes\EleveController;
 use App\Http\Controllers\Api\Personnes\EnseignantController;
@@ -117,6 +118,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // --- Établissement -------------------------------------------------------
     Route::get('/parametres', [ParametreController::class, 'show']);
     Route::put('/parametres', [ParametreController::class, 'update']);
+
+    // --- Notifications -------------------------------------------------------
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::post('/notifications/tout-lire', [NotificationController::class, 'toutLire']);
+    Route::post('/notifications/{id}/lire', [NotificationController::class, 'lire']);
 });
 
 // Photo d'élève : URL signée et temporaire générée par EleveResource (balise <img>, sans token)
