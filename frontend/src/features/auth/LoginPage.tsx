@@ -134,7 +134,7 @@ export function LoginPage() {
                     </p>
                   ) : (
                     <p id="ecole-aide" className="text-xs text-muted-foreground">
-                      Communiqué par votre établissement. Il est mémorisé sur cet appareil.
+                      Fourni par votre école.
                     </p>
                   )}
                 </div>
