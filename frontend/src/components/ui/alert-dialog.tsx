@@ -89,7 +89,7 @@ function AlertDialogFooter({
     <div
       data-slot="alert-dialog-footer"
       className={cn(
-        "flex flex-col-reverse gap-3 pt-1 sm:flex-row *:h-11 *:flex-1 *:rounded-xl *:text-sm *:font-semibold",
+        "mt-5 flex flex-col-reverse gap-3 sm:flex-row *:h-11 *:flex-1 *:rounded-xl *:text-sm *:font-semibold",
         className
       )}
       {...props}
