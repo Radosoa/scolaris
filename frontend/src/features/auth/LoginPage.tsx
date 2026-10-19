@@ -11,6 +11,7 @@ import {
   Lock,
   Mail,
   Presentation,
+  School,
   Users,
   type LucideIcon,
 } from 'lucide-react'
@@ -21,6 +22,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { applyValidationErrors, getErrorMessage } from '@/lib/api'
+import { ecoleStorage } from '@/lib/ecole'
 import { cn } from '@/lib/utils'
 import { useAuth } from './auth-context'
 import { ChoixTheme } from '@/components/layout/ChoixTheme'
@@ -28,6 +30,8 @@ import { Vitrine } from './components/Vitrine'
 import { loginSchema, type LoginValues } from './schemas'
 
 const AFFICHER_DEMO = import.meta.env.VITE_SHOW_DEMO_ACCOUNTS === 'true'
+// École imposée par l'adresse (lycee-x.scolaris.mg) : pas de champ à remplir
+const ECOLE_DU_SOUS_DOMAINE = ecoleStorage.duSousDomaine()
 const ANNEE = new Date().getFullYear()
 
 const COMPTES_DEMO: { libelle: string; detail: string; email: string; icone: LucideIcon }[] = [
@@ -45,7 +49,7 @@ export function LoginPage() {
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
+    defaultValues: { ecole: ecoleStorage.get() ?? (AFFICHER_DEMO ? 'demo' : ''), email: '', password: '' },
   })
   const { errors, isSubmitting } = form.formState
 
@@ -53,7 +57,8 @@ export function LoginPage() {
     setErreur(null)
     try {
       // La redirection est faite par GuestRoute dès que l'utilisateur est authentifié
-      await login(values)
+      ecoleStorage.set(values.ecole)
+      await login({ email: values.email, password: values.password })
     } catch (error) {
       if (!applyValidationErrors(error, form.setError)) {
         setErreur(getErrorMessage(error))
@@ -63,6 +68,7 @@ export function LoginPage() {
 
   /** Compte de démonstration : remplit le formulaire et se connecte directement. */
   const essayer = (email: string) => {
+    if (!form.getValues('ecole')) form.setValue('ecole', 'demo')
     form.setValue('email', email, { shouldValidate: true })
     form.setValue('password', 'password', { shouldValidate: true })
     void onSubmit()
@@ -98,6 +104,37 @@ export function LoginPage() {
                   <AlertCircle />
                   <AlertDescription>{erreur}</AlertDescription>
                 </Alert>
+              )}
+
+              {!ECOLE_DU_SOUS_DOMAINE && (
+                <div className="space-y-1.5">
+                  <Label htmlFor="ecole" className="text-xs text-muted-foreground">
+                    Code de l’établissement
+                  </Label>
+                  <div className="relative">
+                    <School className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      id="ecole"
+                      autoComplete="organization"
+                      autoCapitalize="none"
+                      spellCheck={false}
+                      placeholder="ex. lycee-andohalo"
+                      className="h-11 pl-9"
+                      aria-invalid={!!errors.ecole}
+                      aria-describedby={errors.ecole ? 'ecole-erreur' : 'ecole-aide'}
+                      {...form.register('ecole')}
+                    />
+                  </div>
+                  {errors.ecole ? (
+                    <p id="ecole-erreur" className="text-sm text-destructive">
+                      {errors.ecole.message}
+                    </p>
+                  ) : (
+                    <p id="ecole-aide" className="text-xs text-muted-foreground">
+                      Communiqué par votre établissement. Il est mémorisé sur cet appareil.
+                    </p>
+                  )}
+                </div>
               )}
 
               <div className="space-y-1.5">

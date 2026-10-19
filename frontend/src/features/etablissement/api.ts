@@ -31,3 +31,32 @@ export function useModifierParametres() {
     onSuccess: (parametres) => queryClient.setQueryData(PARAMETRES_CLE, appliquer(parametres)),
   })
 }
+
+export interface IdentiteEcole {
+  code: string | null
+  nom: string
+  adresse: string | null
+  ville: string | null
+  telephone: string | null
+  email: string | null
+  chef_etablissement: string | null
+}
+
+export const ECOLE_CLE = ['ecole'] as const
+
+/** Identité de l'école courante (menu, en-tête des documents). */
+export function useEcole() {
+  return useQuery({
+    queryKey: ECOLE_CLE,
+    queryFn: async () => (await api.get<{ data: IdentiteEcole }>('/ecole')).data.data,
+    staleTime: Infinity,
+  })
+}
+
+export function useModifierEcole() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: async (valeurs: Omit<IdentiteEcole, 'code'>) => (await api.put<{ data: IdentiteEcole }>('/ecole', valeurs)).data.data,
+    onSuccess: (ecole) => queryClient.setQueryData(ECOLE_CLE, ecole),
+  })
+}

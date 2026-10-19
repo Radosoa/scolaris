@@ -2,12 +2,14 @@ import { GraduationCap } from 'lucide-react'
 import { NavLink } from 'react-router'
 import { navigationPour } from '@/config/navigation'
 import { useAuth } from '@/features/auth/auth-context'
+import { useEcole } from '@/features/etablissement/api'
 import { cn } from '@/lib/utils'
 
 /** Contenu de la sidebar, partagé entre la version bureau et le tiroir mobile. */
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const { user } = useAuth()
   const groupes = navigationPour(user?.roles ?? [])
+  const { data: ecole } = useEcole()
 
   return (
     <div className="flex h-full flex-col">
@@ -17,7 +19,9 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         </div>
         <div className="leading-tight">
           <p className="font-semibold tracking-tight">Scolaris</p>
-          <p className="text-[11px] text-muted-foreground">Gestion scolaire</p>
+          <p className="max-w-40 truncate text-[11px] text-muted-foreground" title={ecole?.nom}>
+            {ecole?.nom ?? 'Gestion scolaire'}
+          </p>
         </div>
       </div>
 

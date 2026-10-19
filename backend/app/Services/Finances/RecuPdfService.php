@@ -17,7 +17,7 @@ class RecuPdfService
 
     public function contenu(Paiement $paiement): string
     {
-        return Pdf::loadView('pdf.recu', ['ecole' => config('ecole'), 'r' => $this->donnees($paiement)])
+        return Pdf::loadView('pdf.recu', ['ecole' => $this->parametres->identite(), 'r' => $this->donnees($paiement)])
             ->setPaper('a5', 'landscape')
             ->output();
     }
@@ -67,7 +67,7 @@ class RecuPdfService
             'cumul' => $euros($cumul),
             'reste' => $euros(max(0, $total - $cumul)),
             'encaisse_par' => $paiement->encaissePar?->name,
-            'fait_le' => sprintf('Fait à %s, le %s', config('ecole.ville'), $paiement->created_at->format('d/m/Y')),
+            'fait_le' => sprintf('Fait à %s, le %s', $this->parametres->identite()['ville'], $paiement->created_at->format('d/m/Y')),
         ];
     }
 }

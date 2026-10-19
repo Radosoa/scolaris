@@ -2,12 +2,14 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Eleve;
+use App\Support\EcoleCourante;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\URL;
 
 /**
- * @mixin \App\Models\Eleve
+ * @mixin Eleve
  */
 class EleveResource extends JsonResource
 {
@@ -27,7 +29,7 @@ class EleveResource extends JsonResource
             'lieu_naissance' => $this->lieu_naissance,
             // URL signée et temporaire : la photo d'un mineur n'est jamais publique
             'photo_url' => $this->photo_path
-                ? URL::temporarySignedRoute('eleves.photo', now()->addHour(), ['eleve' => $this->id, 'v' => md5($this->photo_path)])
+                ? URL::temporarySignedRoute('eleves.photo', now()->addHour(), array_filter(['eleve' => $this->id, 'v' => md5($this->photo_path), 'ecole' => app(EcoleCourante::class)->get()?->code]))
                 : null,
             'compte' => $this->whenLoaded('user', fn () => $this->user ? ['email' => $this->user->email, 'actif' => $this->user->actif] : null),
             'tuteurs' => $this->whenLoaded('tuteurs', fn () => $this->tuteurs->map(fn ($tuteur) => [

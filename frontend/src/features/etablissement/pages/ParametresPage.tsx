@@ -8,18 +8,23 @@ import { formatMontant, type Devise } from '@/features/finances/format'
 import { getErrorMessage } from '@/lib/api'
 import { cn } from '@/lib/utils'
 import { ErreurChargement } from '@/pages/ErrorPages'
-import { useModifierParametres, useParametres } from '../api'
+import { useEcole, useModifierParametres, useParametres } from '../api'
+import { IdentiteEcole } from '../components/IdentiteEcole'
 
 /** Réglages de l'établissement (direction). */
 export function ParametresPage() {
   const requete = useParametres()
+  const ecole = useEcole()
 
   return (
     <>
       <PageHeader title="Paramètres" description="Réglages de l’établissement, appliqués à tous les utilisateurs." />
       {requete.isError && <ErreurChargement error={requete.error} />}
       {requete.isPending && <Skeleton className="h-96 w-full" />}
-      {requete.data && <ChoixDevise actuelle={requete.data.devise} devises={requete.data.devises} />}
+      <div className="space-y-10">
+        {ecole.data && <IdentiteEcole ecole={ecole.data} />}
+        {requete.data && <ChoixDevise actuelle={requete.data.devise} devises={requete.data.devises} />}
+      </div>
     </>
   )
 }
