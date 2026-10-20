@@ -52,6 +52,8 @@ class GestionEcoles
                 ->assignRole(Role::Admin->value);
         }
         $this->parametres->definirIdentite(['nom' => $nom]);
+        // Création terminée : une école sans cette date a été interrompue en cours de remplissage
+        $ecole->update(['prete_le' => now()]);
 
         return $ecole;
     }
@@ -63,7 +65,7 @@ class GestionEcoles
     public function importer(string $code, string $nom, string $base): Ecole
     {
         $this->verifierCode($code);
-        $ecole = Ecole::updateOrCreate(['code' => $code], ['base_de_donnees' => $base, 'nom' => $nom, 'actif' => true]);
+        $ecole = Ecole::updateOrCreate(['code' => $code], ['base_de_donnees' => $base, 'nom' => $nom, 'actif' => true, 'prete_le' => now()]);
 
         $racine = storage_path('app/private');
         $dossier = "{$racine}/ecoles/{$code}";
@@ -80,6 +82,15 @@ class GestionEcoles
         $this->parametres->definirIdentite(['nom' => $nom] + $identite);
 
         return $ecole;
+    }
+
+    /** Supprime l'école, sa base et ses fichiers (école de démonstration à recréer). */
+    public function supprimer(Ecole $ecole): void
+    {
+        DB::purge('mysql');
+        DB::connection('central')->statement("DROP DATABASE IF EXISTS `{$ecole->base_de_donnees}`");
+        File::deleteDirectory(storage_path('app/private/ecoles/'.$ecole->code));
+        $ecole->delete();
     }
 
     /** Applique les migrations à la base de l'école courante. */
