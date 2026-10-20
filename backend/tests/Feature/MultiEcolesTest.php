@@ -96,6 +96,24 @@ class MultiEcolesTest extends TestCase
         $this->ecole('beta')->getJson('/api/ecole')->assertJsonPath('data.nom', 'Collège Beta')->assertJsonPath('data.ville', null);
     }
 
+    public function test_une_creation_interrompue_est_reprise_au_demarrage(): void
+    {
+        // Une école complète n'est pas touchée
+        $this->artisan('ecole:creer', ['code' => 'alpha', 'nom' => 'Lycée Alpha', '--email' => 'x@alpha.mg', '--mot-de-passe' => 'secret-123', '--si-absente' => true])
+            ->expectsOutput('École « alpha » déjà présente.');
+
+        // Remplissage interrompu : l'école est supprimée puis recréée (même code, nouvelle base vide)
+        Ecole::where('code', 'beta')->update(['prete_le' => null]);
+        $this->artisan('ecole:creer', ['code' => 'beta', 'nom' => 'Collège Beta', '--email' => 'nouvelle@beta.mg', '--mot-de-passe' => 'secret-456', '--si-absente' => true])
+            ->expectsOutput('Création de « beta » interrompue précédemment : elle est recréée.')
+            ->assertSuccessful();
+
+        $this->assertNotNull(Ecole::where('code', 'beta')->value('prete_le'));
+        $this->seConnecter('beta', 'nouvelle@beta.mg', 'secret-456');
+        $this->app['auth']->forgetGuards();
+        $this->ecole('beta')->postJson('/api/auth/login', ['email' => 'direction@beta.mg', 'password' => 'motdepasse-beta'])->assertUnprocessable();
+    }
+
     public function test_les_relances_passent_dans_chaque_ecole(): void
     {
         $this->artisan('scolaris:relancer-impayes')
