@@ -70,7 +70,8 @@ export function LoginPage() {
 
   /** Compte de démonstration : remplit le formulaire et se connecte directement. */
   const essayer = (email: string) => {
-    if (!form.getValues('ecole')) form.setValue('ecole', 'demo')
+    // Les comptes de démonstration appartiennent toujours à l'école « demo »
+    form.setValue('ecole', 'demo', { shouldValidate: true })
     form.setValue('email', email, { shouldValidate: true })
     form.setValue('password', 'password', { shouldValidate: true })
     void onSubmit()
