@@ -9,13 +9,13 @@ use Illuminate\Database\Eloquent\Model;
  * École cliente (base centrale). Ses données vivent dans sa propre base (base_de_donnees) ;
  * le nom est recopié ici pour la liste des écoles et l'écran de connexion.
  */
-#[Fillable(['code', 'base_de_donnees', 'nom', 'actif'])]
+#[Fillable(['code', 'base_de_donnees', 'nom', 'actif', 'prete_le'])]
 class Ecole extends Model
 {
     protected $connection = 'central';
 
     protected function casts(): array
     {
-        return ['actif' => 'boolean'];
+        return ['actif' => 'boolean', 'prete_le' => 'datetime'];
     }
 }

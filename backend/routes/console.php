@@ -31,10 +31,16 @@ Artisan::command('ecole:creer {code : identifiant court, ex. lycee-andohalo} {no
     {--email= : e-mail du compte de la direction} {--mot-de-passe= : mot de passe de ce compte}
     {--demo : remplir la base avec les données de démonstration}
     {--si-absente : ne rien faire si ce code existe déjà (premier démarrage d’un serveur)}', function (GestionEcoles $gestion) {
-    if ($this->option('si-absente') && Ecole::where('code', $this->argument('code'))->exists()) {
-        $this->info('École « '.$this->argument('code').' » déjà présente.');
+    $existante = Ecole::where('code', $this->argument('code'))->first();
+    if ($this->option('si-absente') && $existante) {
+        if ($existante->prete_le) {
+            $this->info('École « '.$existante->code.' » déjà présente.');
 
-        return 0;
+            return 0;
+        }
+        // Remplissage interrompu (serveur arrêté pendant la création) : on repart de zéro
+        $this->warn('Création de « '.$existante->code.' » interrompue précédemment : elle est recréée.');
+        $gestion->supprimer($existante);
     }
     try {
         $ecole = $gestion->creer($this->argument('code'), $this->argument('nom'), $this->option('email'), $this->option('mot-de-passe'), (bool) $this->option('demo'));
