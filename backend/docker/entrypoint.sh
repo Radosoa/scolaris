@@ -13,8 +13,12 @@ fi
 # Migrations automatiques au démarrage (désactivables avec RUN_MIGRATIONS=false)
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
     if [ "${ECOLES_MULTI:-false}" = "true" ]; then
-        # Base centrale puis base de chaque école
-        php artisan ecole:migrer
+        # Base centrale puis base de chaque école. Base injoignable (base gratuite mise en veille…) :
+        # l'API démarre quand même et fonctionnera dès le retour de la base, au lieu de planter en boucle.
+        if ! php artisan ecole:migrer; then
+            echo "ATTENTION : base de données injoignable, migrations reportées au prochain démarrage." >&2
+            ECOLE_DEMO_CODE=""
+        fi
         # Premier démarrage : école de démonstration complète (ECOLE_DEMO_CODE=demo par exemple).
         # Lancée en arrière-plan : le remplissage prend quelques minutes, l'API démarre sans attendre.
         if [ -n "${ECOLE_DEMO_CODE}" ]; then
